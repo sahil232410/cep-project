@@ -6,65 +6,99 @@
 
 :root {
   /* Color Palette - Updated to Community Engagement Project theme */
-  --primary: #2a7c13;          /* Organic Forest Green */
-  --primary-hover: #4e9c35;    /* Softer Leaf Green (less bright/glaring) */
-  --primary-dark: #1d570d;     /* Deep Forest Green */
-  --primary-light: #f1f8ed;    /* Soft Mint Green */
-  --bg-app: #f4f6f0;           /* Soft Muted Sage-Grey Background (easy on eyes) */
-  --bg-card: #ffffff;          /* Pure White for cards and sheets */
-  
-  --text-main: #111827;        /* Slate 900 for dark readable body text */
-  --text-heading: #000000;     /* Pure black for headers */
-  --text-muted: #4b5563;       /* Slate 600 for visible muted text */
-  --border-color: #e2e6db;     /* Soft Sage-tinted borders */
-  
+  --primary: #2a7c13;
+  /* Organic Forest Green */
+  --primary-hover: #4e9c35;
+  /* Softer Leaf Green (less bright/glaring) */
+  --primary-dark: #1d570d;
+  /* Deep Forest Green */
+  --primary-light: #f1f8ed;
+  /* Soft Mint Green */
+  --bg-app: #f4f6f0;
+  /* Soft Muted Sage-Grey Background (easy on eyes) */
+  --bg-card: #ffffff;
+  /* Pure White for cards and sheets */
+
+  --text-main: #111827;
+  /* Slate 900 for dark readable body text */
+  --text-heading: #000000;
+  /* Pure black for headers */
+  --text-muted: #4b5563;
+  /* Slate 600 for visible muted text */
+  --border-color: #e2e6db;
+  /* Soft Sage-tinted borders */
+
   /* Category Colors */
-  --wet-color: #78350f;        /* Earthy Brown */
-  --wet-bg: #fff8cf;           /* Soft Yellow Cream */
-  --dry-color: #475569;        /* Slate Gray */
-  --dry-bg: #f1f5f9;           /* Light Gray Tint */
-  --recyclable-color: #1d570d; /* Forest Green */
-  --recyclable-bg: #e6f4ea;    /* Soft Mint Green Tint */
-  --ewaste-color: #991b1b;     /* Crimson Red */
-  --ewaste-bg: #fee2e2;        /* Soft Red Tint */
-  
+  --wet-color: #78350f;
+  /* Earthy Brown */
+  --wet-bg: #fff8cf;
+  /* Soft Yellow Cream */
+  --dry-color: #475569;
+  /* Slate Gray */
+  --dry-bg: #f1f5f9;
+  /* Light Gray Tint */
+  --recyclable-color: #1d570d;
+  /* Forest Green */
+  --recyclable-bg: #e6f4ea;
+  /* Soft Mint Green Tint */
+  --ewaste-color: #991b1b;
+  /* Crimson Red */
+  --ewaste-bg: #fee2e2;
+  /* Soft Red Tint */
+
   /* Accent Warm Cream */
-  --accent-cream: #fbe6c2;     /* Sandy Warm Cream */
+  --accent-cream: #fbe6c2;
+  /* Sandy Warm Cream */
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
-  
+
   /* Borders and Spacings */
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 20px;
-  
+
   /* Fonts */
   --font-family: 'Outfit', system-ui, -apple-system, sans-serif;
-  
+
   /* Max width */
-  --max-width: 1200px;
+  --max-width: 1320px;
 }
 
 /* Dark Theme Variables */
 [data-theme='dark'] {
-  --bg-app: #0f172a;           /* Dark Slate */
-  --bg-card: #1e293b;          /* Darker Slate */
-  --text-main: #cbd5e1;        /* Light Slate Text */
-  --text-heading: #f8fafc;     /* White/Light Slate Heading */
-  --text-muted: #94a3b8;       /* Muted Slate */
-  --border-color: #334155;     /* Dark Border */
-  --primary-light: rgba(16, 185, 129, 0.15); /* Darker Mint Green Tint */
-  --wet-bg: #451a03;           /* Dark Earthy Brown */
-  --wet-color: #fef08a;        /* Pale Yellow text */
-  --dry-bg: #1e293b;           /* Dark Slate */
-  --dry-color: #cbd5e1;        /* Pale Slate text */
-  --recyclable-bg: #064e3b;    /* Dark Forest Green */
-  --recyclable-color: #a7f3d0; /* Pale Mint text */
-  --ewaste-bg: #7f1d1d;        /* Dark Red */
-  --ewaste-color: #fecaca;     /* Pale Red text */
+  --bg-app: #0f172a;
+  /* Dark Slate */
+  --bg-card: #1e293b;
+  /* Darker Slate */
+  --text-main: #cbd5e1;
+  /* Light Slate Text */
+  --text-heading: #f8fafc;
+  /* White/Light Slate Heading */
+  --text-muted: #94a3b8;
+  /* Muted Slate */
+  --border-color: #334155;
+  /* Dark Border */
+  --primary-light: rgba(16, 185, 129, 0.15);
+  /* Darker Mint Green Tint */
+  --wet-bg: #451a03;
+  /* Dark Earthy Brown */
+  --wet-color: #fef08a;
+  /* Pale Yellow text */
+  --dry-bg: #1e293b;
+  /* Dark Slate */
+  --dry-color: #cbd5e1;
+  /* Pale Slate text */
+  --recyclable-bg: #064e3b;
+  /* Dark Forest Green */
+  --recyclable-color: #a7f3d0;
+  /* Pale Mint text */
+  --ewaste-bg: #7f1d1d;
+  /* Dark Red */
+  --ewaste-color: #fecaca;
+  /* Pale Red text */
 }
 
 /* Base Styles */
@@ -98,7 +132,12 @@ body {
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--text-heading);
   font-weight: 600;
   line-height: 1.25;
@@ -164,7 +203,8 @@ button {
 }
 
 .btn-secondary {
-  background-color: #ffffff; /* Solid white background to prevent illustration bleed-through */
+  background-color: #ffffff;
+  /* Solid white background to prevent illustration bleed-through */
   color: var(--primary);
   border: 1px solid var(--primary);
   font-weight: 600;
@@ -411,8 +451,8 @@ button {
 
 .hero-section {
   padding: 85px 0;
-  background-image: 
-    linear-gradient(to right, rgba(244, 246, 240, 0.88) 0%, rgba(244, 246, 240, 0.82) 20%, rgba(244, 246, 240, 0.2) 48%, rgba(244, 246, 240, 0) 60%), 
+  background-image:
+    linear-gradient(to right, rgba(244, 246, 240, 0.88) 0%, rgba(244, 246, 240, 0.82) 20%, rgba(244, 246, 240, 0.2) 48%, rgba(244, 246, 240, 0) 60%),
     url('./assets/hero_bg.jpg');
   background-size: cover;
   background-position: right center;
@@ -432,7 +472,8 @@ button {
 }
 
 .hero-title {
-  color: #111827 !important; /* Always deep dark charcoal */
+  color: #111827 !important;
+  /* Always deep dark charcoal */
   text-align: left;
   margin-left: 0;
   font-size: 3.2rem;
@@ -441,13 +482,15 @@ button {
 }
 
 .hero-title span {
-  color: #2a7c13 !important; /* Always forest green */
+  color: #2a7c13 !important;
+  /* Always forest green */
 }
 
 .hero-tagline {
   font-size: 1.35rem;
   font-weight: 700;
-  color: #2a7c13 !important; /* Always forest green */
+  color: #2a7c13 !important;
+  /* Always forest green */
   margin-top: 8px;
   margin-bottom: 12px;
   text-align: left;
@@ -457,7 +500,8 @@ button {
 
 .hero-desc {
   font-size: 1.15rem;
-  color: #111827 !important; /* Always deep charcoal */
+  color: #111827 !important;
+  /* Always deep charcoal */
   font-weight: 600;
   max-width: 580px;
   margin: 0 0 32px 0;
@@ -910,6 +954,7 @@ button {
     transform: translateY(20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -1055,10 +1100,21 @@ button {
   border-left: 5px solid transparent;
 }
 
-.category-box.wet { border-left-color: var(--wet-color); }
-.category-box.dry { border-left-color: var(--dry-color); }
-.category-box.recyclable { border-left-color: var(--primary); }
-.category-box.ewaste { border-left-color: var(--ewaste-color); }
+.category-box.wet {
+  border-left-color: var(--wet-color);
+}
+
+.category-box.dry {
+  border-left-color: var(--dry-color);
+}
+
+.category-box.recyclable {
+  border-left-color: var(--primary);
+}
+
+.category-box.ewaste {
+  border-left-color: var(--ewaste-color);
+}
 
 .category-box-header {
   display: flex;
@@ -1077,10 +1133,21 @@ button {
   border-radius: var(--radius-sm);
 }
 
-.category-box.wet .category-box-icon { background-color: var(--wet-bg); }
-.category-box.dry .category-box-icon { background-color: var(--dry-bg); }
-.category-box.recyclable .category-box-icon { background-color: var(--recyclable-bg); }
-.category-box.ewaste .category-box-icon { background-color: var(--ewaste-bg); }
+.category-box.wet .category-box-icon {
+  background-color: var(--wet-bg);
+}
+
+.category-box.dry .category-box-icon {
+  background-color: var(--dry-bg);
+}
+
+.category-box.recyclable .category-box-icon {
+  background-color: var(--recyclable-bg);
+}
+
+.category-box.ewaste .category-box-icon {
+  background-color: var(--ewaste-bg);
+}
 
 .category-box h3 {
   font-size: 1.4rem;
@@ -1115,10 +1182,21 @@ button {
   gap: 6px;
 }
 
-.category-box.wet .category-box-footer { color: var(--wet-color); }
-.category-box.dry .category-box-footer { color: var(--dry-color); }
-.category-box.recyclable .category-box-footer { color: var(--primary-dark); }
-.category-box.ewaste .category-box-footer { color: var(--ewaste-color); }
+.category-box.wet .category-box-footer {
+  color: var(--wet-color);
+}
+
+.category-box.dry .category-box-footer {
+  color: var(--dry-color);
+}
+
+.category-box.recyclable .category-box-footer {
+  color: var(--primary-dark);
+}
+
+.category-box.ewaste .category-box-footer {
+  color: var(--ewaste-color);
+}
 
 /* Category Items Filtered List */
 .category-items-section {
@@ -1361,8 +1439,15 @@ button {
 }
 
 @keyframes slideDown {
-  from { opacity: 0; transform: translateY(-10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .quiz-next-actions {
@@ -1784,58 +1869,73 @@ button {
 }
 
 @keyframes slideInLeft {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 /* RESPONSIVE DESIGN - MEDIA QUERIES */
 
 @media (max-width: 1024px) {
+
   /* Tablet Layouts */
-  h1 { font-size: 2.2rem; }
-  h2 { font-size: 1.8rem; }
-  
+  h1 {
+    font-size: 2.2rem;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .matters-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .steps-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .waste-results-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .tips-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .about-grid {
     grid-template-columns: 1fr;
   }
 }
 
 @media (max-width: 768px) {
+
   /* Mobile Layouts */
   .navbar .container {
     height: 64px;
   }
-  
+
   .mobile-menu-btn {
     display: block;
   }
-  
+
   .nav-links {
-    display: none; /* Hide standard nav list on mobile */
+    display: none;
+    /* Hide standard nav list on mobile */
     position: absolute;
     top: 64px;
     left: 0;
@@ -1847,121 +1947,122 @@ button {
     box-shadow: var(--shadow-md);
     gap: 4px;
   }
-  
+
   .nav-links.mobile-open {
     display: flex;
   }
-  
+
   .nav-item {
     width: 100%;
   }
-  
+
   .nav-item button {
     width: 100%;
     text-align: left;
     padding: 12px 16px;
   }
-  
+
   .hero-section {
     padding: 50px 0;
   }
-  
+
   .hero-section h1 {
     font-size: 2.2rem;
   }
-  
+
   .hero-ctas {
     flex-direction: column;
     width: 100%;
     max-width: 320px;
     margin: 0 auto;
   }
-  
-  .hero-ctas button, .hero-ctas a {
+
+  .hero-ctas button,
+  .hero-ctas a {
     width: 100%;
   }
-  
+
   .stats-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  
+
   .matters-grid {
     grid-template-columns: 1fr;
     gap: 16px;
   }
-  
+
   .steps-grid {
     grid-template-columns: 1fr;
     gap: 24px;
   }
-  
+
   .waste-results-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .category-main-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .category-items-section {
     padding: 16px;
   }
-  
+
   .category-section-title-wrap {
     flex-direction: column;
     align-items: flex-start;
     gap: 12px;
   }
-  
+
   .tips-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .quiz-question-card {
     padding: 20px;
   }
-  
+
   .quiz-option-btn {
     padding: 12px 16px;
     font-size: 0.95rem;
   }
-  
+
   .team-grid {
     grid-template-columns: 1fr;
     gap: 24px;
   }
-  
+
   .footer-grid {
     grid-template-columns: 1fr;
     gap: 32px;
   }
-  
+
   .flow-cards-container {
     flex-direction: column;
     gap: 16px;
   }
-  
+
   .flow-arrow {
     transform: rotate(90deg);
     margin: 4px 0;
   }
-  
+
   .photos-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .modal-header-section {
     padding: 24px 20px;
     flex-direction: column;
     align-items: center;
     text-align: center;
   }
-  
+
   .modal-body {
     padding: 20px;
   }
-  
+
   .modal-footer {
     padding: 20px;
     flex-direction: column;
@@ -2156,7 +2257,8 @@ button {
   align-items: center;
   justify-content: center;
   z-index: 200;
-  padding: 92px 20px 20px 20px; /* 92px top padding (72px navbar height + 20px gap) */
+  padding: 92px 20px 20px 20px;
+  /* 92px top padding (72px navbar height + 20px gap) */
 }
 
 .modal-content {
@@ -2812,41 +2914,53 @@ button {
   .home .hero-title {
     font-size: 2rem;
   }
+
   .home .hero-subtitle {
     font-size: 1rem;
   }
+
   .home .stats {
     flex-direction: column;
     align-items: center;
   }
+
   .waste-grid {
     grid-template-columns: 1fr;
   }
+
   .categories-grid {
     grid-template-columns: 1fr;
   }
+
   .tips-grid {
     grid-template-columns: 1fr;
   }
+
   .survey-grid {
     grid-template-columns: 1fr;
   }
+
   .observations-grid {
     grid-template-columns: 1fr;
   }
+
   .gaps-grid {
     grid-template-columns: 1fr;
   }
+
   .modal-content {
     padding: 24px;
     max-height: 90vh;
   }
+
   .quiz-card {
     padding: 20px;
   }
+
   .filter-pills {
     gap: 8px;
   }
+
   .pill {
     padding: 6px 14px;
     font-size: 0.85rem;
@@ -3023,9 +3137,8 @@ button {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
 }
-
-
