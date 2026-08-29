@@ -8,7 +8,7 @@ export const wasteItems = [
     name: "Banana Peel",
     aliases: ["banana", "peel", "fruit", "skin", "organic", "food"],
     category: "wet",
-    icon: "🍎",
+    icon: "🍌",
     description: "Organic fruit leftover that decomposes quickly and naturally.",
     whatToDo: [
       "Place directly in your home compost bin if available.",

@@ -4,7 +4,7 @@ export default function About() {
   return (
     <section className="about-page" id="about">
       <div className="container">
-        <h2>About EcoGuide</h2>
+        <h2>About EcoTrack</h2>
         <p className="page-subtitle">
           A Community Engagement Project (CEP) built by BSc IT students.
         </p>
@@ -12,29 +12,30 @@ export default function About() {
         <div className="about-card">
           <h3>Project Purpose</h3>
           <p>
-            EcoGuide helps people identify common household waste, understand its category,
-            and learn how to segregate and dispose of it responsibly. Our goal is to raise
-            environmental awareness in our local community through technology.
+            EcoTrack is a community-level waste management tracking and awareness platform. It allows residents 
+            to report local waste issues, track their resolution status, and learn how to segregate and dispose 
+            of household waste responsibly. Our goal is to connect local community members with active environmental solutions.
           </p>
         </div>
 
         <div className="about-card">
           <h3>Why It Matters</h3>
           <p>
-            India generates over 62 million tonnes of waste annually. Only about 20% is
-            processed or treated — the rest ends up in landfills. Proper waste segregation
-            at the source (our homes) is the most impactful step every citizen can take.
+            India generates over 62 million tonnes of waste annually. Proper waste management begins by tracking 
+            local issues and educating citizens on sorting at source. EcoTrack bridges this gap by enabling 
+            participatory action and source segregation.
           </p>
         </div>
 
         <div className="about-card">
           <h3>How It Works</h3>
           <ul>
-            <li><strong>Find My Waste:</strong> Search for any household item and instantly see which bin it belongs in.</li>
-            <li><strong>Categories:</strong> Learn the four main waste types — Wet, Dry, Recyclable, and E-Waste.</li>
-            <li><strong>Eco Tips:</strong> Get practical daily tips to reduce, reuse, and recycle.</li>
-            <li><strong>Quiz:</strong> Test your waste management knowledge with scenario-based questions.</li>
-            <li><strong>Community:</strong> View real survey data collected from our neighborhood.</li>
+            <li><strong>Report Waste:</strong> Submit complaints about garbage accumulation or dumping with descriptions, location, and photo proof.</li>
+            <li><strong>Track Report:</strong> Monitor the lifecycle of reported waste items (Reported ➔ Under Review ➔ In Progress ➔ Resolved).</li>
+            <li><strong>Admin Dashboard:</strong> Allows local coordinators to manage incoming complaints, update statuses, and view analytics.</li>
+            <li><strong>Waste Finder:</strong> Search for common household items to find their correct segregation categories.</li>
+            <li><strong>Eco Tips &amp; Quiz:</strong> Educate citizens through tips and interactive quizzes.</li>
+            <li><strong>Google Form Integration:</strong> Import and sync community reports collected via public surveys directly into the admin panel.</li>
           </ul>
         </div>
 
@@ -45,7 +46,7 @@ export default function About() {
             <li>JavaScript (Programming Language)</li>
             <li>HTML &amp; CSS (Structure &amp; Styling)</li>
             <li>Vite (Build Tool)</li>
-            <li>localStorage (For quiz scores)</li>
+            <li>localStorage (For data persistence)</li>
           </ul>
         </div>
 
@@ -57,8 +58,8 @@ export default function About() {
           </p>
           <ul>
             <li><strong>Sahil</strong> — UI Design &amp; Development</li>
-            <li><strong>Atul</strong> — Research &amp; Content</li>
-            <li><strong>Shezad</strong> — Survey &amp; Community Data</li>
+            <li><strong>Atul</strong> — Core Waste Reporting &amp; Tracking</li>
+            <li><strong>Shezad</strong> — Admin Dashboard &amp; Data Integration</li>
           </ul>
         </div>
       </div>

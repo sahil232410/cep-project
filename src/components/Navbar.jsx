@@ -25,13 +25,11 @@ export default function Navbar({ currentPage, setCurrentPage }) {
   // Navigation tabs definition
   const navItems = [
     { id: 'home', label: 'Home' },
-    { id: 'find-waste', label: 'Find Waste' },
-    { id: 'scanner', label: 'AI Scanner' },
-    { id: 'categories', label: 'Categories' },
+    { id: 'report-waste', label: 'Report Waste' },
+    { id: 'track-report', label: 'Track Report' },
+    { id: 'find-waste', label: 'Waste Finder' },
     { id: 'eco-tips', label: 'Eco Tips' },
     { id: 'quiz', label: 'Quiz' },
-    { id: 'community', label: 'Community' },
-    { id: 'gallery', label: 'Field Gallery' },
     { id: 'about', label: 'About' }
   ];
 
@@ -50,22 +48,13 @@ export default function Navbar({ currentPage, setCurrentPage }) {
         {/* Brand Logo */}
         <div className="nav-brand" onClick={() => handleNavClick('home')}>
           <div className="logo-leaf">
-            <Leaf size={20} fill="currentColor" />
+            <Leaf size={18} fill="currentColor" />
           </div>
-          <span>EcoGuide</span>
+          <span>EcoTrack</span>
         </div>
 
-        {/* Action controls (Theme toggle + hamburger) */}
+        {/* Action controls (hamburger for mobile) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button 
-            className="theme-toggle-btn" 
-            onClick={toggleTheme}
-            title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
-            aria-label="Toggle theme"
-          >
-            {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-          </button>
-
           {/* Hamburger button for mobile devices */}
           <button 
             className="mobile-menu-btn" 
@@ -88,6 +77,17 @@ export default function Navbar({ currentPage, setCurrentPage }) {
               </button>
             </li>
           ))}
+          {/* Inline Theme Toggle beside the About page */}
+          <li className="nav-item">
+            <button 
+              className="theme-toggle-btn-inline" 
+              onClick={toggleTheme}
+              title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+              aria-label="Toggle theme"
+            >
+              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
+          </li>
         </ul>
       </div>
     </nav>

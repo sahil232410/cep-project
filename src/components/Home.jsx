@@ -1,97 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { wasteItems } from '../data/wasteData';
 
 export default function Home(props) {
   var setCurrentPage = props.setCurrentPage;
-  
-  function handleFindWaste() {
-    setCurrentPage('find-waste');
-  }
-
-  // Personal Waste Tracker States
-  var [trackerLogs, setTrackerLogs] = useState(function () {
-    var saved = localStorage.getItem('trackerLogs');
-    return saved ? JSON.parse(saved) : [];
-  });
-  var [itemName, setItemName] = useState('');
-  var [itemCategory, setItemCategory] = useState('wet');
-  var [itemWeight, setItemWeight] = useState(100);
-
-  // Sync tracker logs to local storage
-  useEffect(function () {
-    localStorage.setItem('trackerLogs', JSON.stringify(trackerLogs));
-  }, [trackerLogs]);
-
-  var handleAddLog = function (e) {
-    e.preventDefault();
-    if (!itemWeight || itemWeight <= 0) return;
-    
-    var newLog = {
-      id: Date.now(),
-      name: itemName.trim() || (itemCategory.charAt(0).toUpperCase() + itemCategory.slice(1) + ' Item'),
-      category: itemCategory,
-      weight: parseFloat(itemWeight)
-    };
-
-    setTrackerLogs([newLog, ...trackerLogs]);
-    setItemName('');
-    setItemWeight(100);
-  };
-
-  var handleDeleteLog = function (id) {
-    setTrackerLogs(trackerLogs.filter(function (log) {
-      return log.id !== id;
-    }));
-  };
-
-  var handleClearLogs = function () {
-    if (window.confirm('Are you sure you want to clear all logged waste for today?')) {
-      setTrackerLogs([]);
-    }
-  };
-
-  // Calculations
-  var totalWeight = trackerLogs.reduce(function (sum, log) {
-    return sum + log.weight;
-  }, 0);
-
-  var categoryWeights = trackerLogs.reduce(function (acc, log) {
-    acc[log.category] = (acc[log.category] || 0) + log.weight;
-    return acc;
-  }, { wet: 0, dry: 0, recyclable: 0, 'e-waste': 0 });
-
-  var recyclableWeight = categoryWeights['recyclable'] + categoryWeights['wet']; 
-  var recyclingRate = totalWeight > 0 ? Math.round((recyclableWeight / totalWeight) * 100) : 0;
-
-  // Determine Badge
-  var getEcoBadge = function (weight) {
-    if (weight === 0) return { title: 'Log Waste to Start', icon: '🌱', desc: 'Add items you segregated today to see your eco status!' };
-    if (weight < 500) return { title: 'Eco Starter', icon: '🌟', desc: 'Great job starting to segregate! Keep it up!' };
-    if (weight < 1500) return { title: 'Green Citizen', icon: '🌿', desc: 'Wonderful segregation efforts! You are helping protect landfills.' };
-    return { title: 'Zero Waste Champion', icon: '🏆', desc: 'Outstanding! Your sorted and recovered rate is excellent!' };
-  };
-
-  var ecoBadge = getEcoBadge(totalWeight);
 
   return (
     <div className="home" id="home">
       {/* Hero Section */}
+      {/* Hero Section */}
       <section className="hero-section">
         <div className="container">
-          <div className="hero-tag">🌿 Your Guide to a Greener Planet</div>
-          <h1 className="hero-title">
-            Welcome to <span>EcoGuide</span>
-          </h1>
-          <p className="hero-subtitle">
-            Identify, segregate, and responsibly dispose of household waste. Join our community in making a positive environmental impact.
-          </p>
-          <div className="hero-ctas">
-            <button className="btn-primary" onClick={handleFindWaste}>
-              Find My Waste
-            </button>
-            <button className="btn-secondary btn" onClick={function() { setCurrentPage('quiz'); }}>
-              Take the Quiz
-            </button>
+          <div className="hero-glass-card">
+            <div className="hero-tag">🌿 EcoTrack Community Platform</div>
+            <h1 className="hero-title">
+              Welcome to <span>EcoTrack</span>
+            </h1>
+            <p className="hero-tagline">
+              “Report. Track. Resolve.”
+            </p>
+            <p className="hero-desc">
+              Helping communities report and track local waste-management problems. Segregate waste, resolve public issues, and keep our neighborhood clean.
+            </p>
+            <div className="hero-ctas">
+              <button className="btn-primary" onClick={function() { setCurrentPage('report-waste'); }}>
+                Report Waste
+              </button>
+              <button className="btn-secondary btn" onClick={function() { setCurrentPage('track-report'); }}>
+                Track Report
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -102,200 +39,89 @@ export default function Home(props) {
           <div className="stats-grid">
             <div className="stat-card">
               <div className="stat-num">{wasteItems.length}+</div>
-              <div className="stat-label">Waste Items</div>
+              <div className="stat-label">Identified Waste Items</div>
             </div>
             <div className="stat-card">
               <div className="stat-num">4</div>
-              <div className="stat-label">Categories</div>
+              <div className="stat-label">Waste Categories</div>
             </div>
             <div className="stat-card">
               <div className="stat-num">100%</div>
-              <div className="stat-label">Free to Use</div>
+              <div className="stat-label">Community Driven</div>
             </div>
             <div className="stat-card">
-              <div className="stat-num">24/7</div>
-              <div className="stat-label">Accessible</div>
+              <div className="stat-num">CEP</div>
+              <div className="stat-label">BSc IT Project Topic #44</div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Why Segregation Matters Section */}
-      <section className="matters-section">
+      {/* Core Feature Cards Section */}
+      <section className="matters-section" style={{ padding: '60px 0' }}>
         <div className="container">
           <div className="section-header">
-            <h2>Why Segregation Matters</h2>
-            <p>Proper waste management starts at home. Here's why your effort counts.</p>
+            <h2>Our Core Pillars</h2>
+            <p>EcoTrack integrates environmental awareness with direct community action.</p>
           </div>
           <div className="matters-grid">
-            <div className="matter-card card">
-              <div className="matter-icon-wrap">🌍</div>
-              <h3>Reduces Landfill</h3>
-              <p>Segregating waste prevents recyclable and compostable materials from taking up space in landfills.</p>
+            {/* Card 1: Report Waste */}
+            <div className="matter-card card" onClick={function() { setCurrentPage('report-waste'); }} style={{ cursor: 'pointer', transition: 'transform 0.2s' }}>
+              <div className="matter-icon-wrap" style={{ fontSize: '2rem' }}>♻️</div>
+              <h3>Report Waste</h3>
+              <p>Report garbage accumulations, overflowing community bins, or dumping issues with description and photos.</p>
+              <span className="btn-text" style={{ padding: '4px 0', display: 'inline-block', marginTop: '12px' }}>File a Report →</span>
             </div>
-            <div className="matter-card card">
-              <div className="matter-icon-wrap">♻️</div>
-              <h3>Improves Recycling</h3>
-              <p>Clean, segregated dry waste is much easier to process and recycle efficiently.</p>
+
+            {/* Card 2: Track Reports */}
+            <div className="matter-card card" onClick={function() { setCurrentPage('track-report'); }} style={{ cursor: 'pointer', transition: 'transform 0.2s' }}>
+              <div className="matter-icon-wrap" style={{ fontSize: '2rem' }}>🔎</div>
+              <h3>Track Reports</h3>
+              <p>Enter your unique report ID (e.g. ET-1001) to view the current cleaning status and resolution timeline.</p>
+              <span className="btn-text" style={{ padding: '4px 0', display: 'inline-block', marginTop: '12px' }}>Track Progress →</span>
             </div>
-            <div className="matter-card card">
-              <div className="matter-icon-wrap">🌱</div>
-              <h3>Creates Compost</h3>
-              <p>Wet waste can be converted into nutrient-rich compost for agriculture and gardens.</p>
+
+            {/* Card 3: Waste Dashboard */}
+            <div className="matter-card card" onClick={function() { setCurrentPage('admin-dashboard'); }} style={{ cursor: 'pointer', transition: 'transform 0.2s' }}>
+              <div className="matter-icon-wrap" style={{ fontSize: '2rem' }}>📊</div>
+              <h3>Waste Dashboard</h3>
+              <p>Access the Admin Dashboard to manage reports, update status reviews, and check waste analytics charts.</p>
+              <span className="btn-text" style={{ padding: '4px 0', display: 'inline-block', marginTop: '12px' }}>View Dashboard →</span>
             </div>
-            <div className="matter-card card">
-              <div className="matter-icon-wrap">🛡️</div>
-              <h3>Prevents Hazards</h3>
-              <p>Keeping e-waste and hazardous materials out of regular bins protects sanitation workers and the environment.</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Interactive Waste Tracker Section */}
-      <section className="tracker-section">
-        <div className="container">
-          <div className="section-header">
-            <h2>🌱 Personal Waste Log &amp; Tracker</h2>
-            <p>Log your daily household waste items to see your recovery rate and earn Eco Badges!</p>
-          </div>
-
-          <div className="tracker-grid">
-            {/* Form Column */}
-            <form onSubmit={handleAddLog} className="tracker-form-card">
-              <h3>Log Waste Item</h3>
-              <div className="form-group" style={{ marginTop: '16px' }}>
-                <label>Item Name (Optional)</label>
-                <input 
-                  type="text" 
-                  className="form-control" 
-                  placeholder="e.g. Apple core, Plastic bottle" 
-                  value={itemName}
-                  onChange={function(e) { setItemName(e.target.value); }}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>Waste Category</label>
-                <select 
-                  className="form-control" 
-                  value={itemCategory}
-                  onChange={function(e) { setItemCategory(e.target.value); }}
-                >
-                  <option value="wet">🟢 Wet Waste (Organic/Compostable)</option>
-                  <option value="dry">🟡 Dry Waste (Non-Recyclable)</option>
-                  <option value="recyclable">🔵 Recyclable Waste (Paper/Plastic/Metal)</option>
-                  <option value="e-waste">🔴 E-Waste / Hazardous</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Estimated Weight (grams)</label>
-                <input 
-                  type="number" 
-                  className="form-control" 
-                  min="1" 
-                  value={itemWeight}
-                  onChange={function(e) { setItemWeight(e.target.value); }}
-                  required
-                />
-              </div>
-
-              <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '8px' }}>
-                Log Waste Item
-              </button>
-            </form>
-
-            {/* Dashboard Column */}
-            <div className="tracker-dashboard-card">
-              <h3>Your Progress Today</h3>
-
-              {/* Eco Badge Box */}
-              <div className="badge-earned-box" style={{ marginTop: '16px' }}>
-                <div style={{ fontSize: '2.5rem' }}>{ecoBadge.icon}</div>
-                <div className="badge-title">{ecoBadge.title}</div>
-                <p style={{ margin: '8px 0 0', fontSize: '0.88rem', opacity: 0.8 }}>{ecoBadge.desc}</p>
-              </div>
-
-              {/* Stats Row */}
-              <div className="tracker-stats-row">
-                <div className="tracker-stat-box">
-                  <div className="tracker-stat-val">{(totalWeight / 1000).toFixed(2)} kg</div>
-                  <div className="tracker-stat-lbl">Total Waste Logged</div>
-                </div>
-                <div className="tracker-stat-box">
-                  <div className="tracker-stat-val">{recyclingRate}%</div>
-                  <div className="tracker-stat-lbl">Recovery &amp; Recycle Rate</div>
-                </div>
-              </div>
-
-              {/* Logged List Title */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h4 style={{ fontSize: '1rem' }}>Logged Items ({trackerLogs.length})</h4>
-                {trackerLogs.length > 0 && (
-                  <button type="button" className="btn-danger-text" onClick={handleClearLogs}>
-                    Clear All
-                  </button>
-                )}
-              </div>
-
-              {/* Log List */}
-              {trackerLogs.length === 0 ? (
-                <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginTop: '16px', fontStyle: 'italic' }}>
-                  No items logged today. Use the form on the left to start tracking!
-                </p>
-              ) : (
-                <ul className="tracker-logs-list">
-                  {trackerLogs.map(function(log) {
-                    var bulletColor = 
-                      log.category === 'wet' ? '🟢' : 
-                      log.category === 'dry' ? '🟡' : 
-                      log.category === 'recyclable' ? '🔵' : '🔴';
-                    return (
-                      <li key={log.id} className="tracker-log-item">
-                        <span>
-                          <span style={{ marginRight: '8px' }}>{bulletColor}</span>
-                          <strong>{log.name}</strong> 
-                          <span style={{ color: 'var(--text-muted)', marginLeft: '6px' }}>({log.weight}g)</span>
-                        </span>
-                        <button 
-                          className="btn-danger-text" 
-                          onClick={function() { handleDeleteLog(log.id); }}
-                        >
-                          Delete
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              )}
+            {/* Card 4: Learn & Recycle */}
+            <div className="matter-card card" onClick={function() { setCurrentPage('find-waste'); }} style={{ cursor: 'pointer', transition: 'transform 0.2s' }}>
+              <div className="matter-icon-wrap" style={{ fontSize: '2rem' }}>🌱</div>
+              <h3>Learn &amp; Recycle</h3>
+              <p>Search household items using the Waste Finder. Learn segregation protocols, take quizzes, and check tips.</p>
+              <span className="btn-text" style={{ padding: '4px 0', display: 'inline-block', marginTop: '12px' }}>Search Finder →</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* How It Works Section */}
-      <section className="how-section">
+      <section className="how-section" style={{ background: 'var(--bg-card)', padding: '60px 0' }}>
         <div className="container">
           <div className="section-header">
-            <h2>How EcoGuide Works</h2>
-            <p>Three simple steps to better waste management</p>
+            <h2>How EcoTrack Works</h2>
+            <p>Three simple steps to resolve community waste concerns</p>
           </div>
           <div className="steps-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '24px' }}>
             <div className="step-card card text-center" style={{ textAlign: 'center', padding: '32px 24px' }}>
               <div className="step-number" style={{ width: '40px', height: '40px', background: 'var(--primary)', color: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold', margin: '0 auto 16px' }}>1</div>
-              <h3>Search</h3>
-              <p>Type in the name of the item you want to throw away in the Find Waste section.</p>
+              <h3>Report</h3>
+              <p>Residents take a photo of an overflowing garbage dump, fill in the location, and submit a ticket.</p>
             </div>
             <div className="step-card card text-center" style={{ textAlign: 'center', padding: '32px 24px' }}>
               <div className="step-number" style={{ width: '40px', height: '40px', background: 'var(--primary)', color: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold', margin: '0 auto 16px' }}>2</div>
-              <h3>Identify</h3>
-              <p>Learn which category (Wet, Dry, Recyclable, E-Waste) it belongs to instantly.</p>
+              <h3>Track</h3>
+              <p>The system generates a unique ID (e.g. ET-1001) allowing the resident to track the issue's lifecycle.</p>
             </div>
             <div className="step-card card text-center" style={{ textAlign: 'center', padding: '32px 24px' }}>
               <div className="step-number" style={{ width: '40px', height: '40px', background: 'var(--primary)', color: 'white', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem', fontWeight: 'bold', margin: '0 auto 16px' }}>3</div>
-              <h3>Dispose</h3>
-              <p>Follow our best practices to segregate and dispose of the item responsibly.</p>
+              <h3>Resolve</h3>
+              <p>Admin team reviews the complaint, schedules collections, and updates status to "Resolved".</p>
             </div>
           </div>
         </div>

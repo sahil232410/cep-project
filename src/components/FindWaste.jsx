@@ -4,6 +4,8 @@ import { wasteItems } from '../data/wasteData';
 export default function FindWaste() {
   var [search, setSearch] = useState('');
   var [selectedItem, setSelectedItem] = useState(null);
+  var [selectedCategory, setSelectedCategory] = useState('All');
+  var [currentPage, setCurrentPage] = useState(1);
 
   // Prevent background scrolling when modal is open
   useEffect(function () {
@@ -18,20 +20,38 @@ export default function FindWaste() {
     };
   }, [selectedItem]);
 
+  // Reset to first page on search term change
+  useEffect(function () {
+    setCurrentPage(1);
+  }, [search]);
+
   var filtered = wasteItems.filter(function (item) {
     var term = search.toLowerCase();
     var nameMatch = item.name.toLowerCase().indexOf(term) !== -1;
     var aliasMatch = item.aliases && item.aliases.some(function (a) {
       return a.toLowerCase().indexOf(term) !== -1;
     });
-    return nameMatch || aliasMatch;
+    var searchOk = nameMatch || aliasMatch;
+
+    var categoryOk = true;
+    if (selectedCategory !== 'All') {
+      categoryOk = item.category.toLowerCase() === selectedCategory.toLowerCase();
+    }
+
+    return searchOk && categoryOk;
   });
+
+  // Pagination bounds
+  var itemsPerPage = 12;
+  var totalPages = Math.ceil(filtered.length / itemsPerPage);
+  var paginatedItems = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
     <section className={"find-waste" + (selectedItem ? " modal-open" : "")} id="find-waste">
       <div className="container">
         <h2>Find Your Waste</h2>
         <p className="page-subtitle">Search for any household item to learn how to dispose of it.</p>
+        
         <input
           type="text"
           placeholder="Type item name... (e.g. banana peel, battery, bottle)"
@@ -40,9 +60,30 @@ export default function FindWaste() {
           onChange={function (e) { setSearch(e.target.value); }}
         />
 
+        {/* Category Filter Pills */}
+        <div className="filter-pills" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '32px', marginTop: '16px' }}>
+          {['All', 'Wet', 'Dry', 'Recyclable', 'E-Waste'].map(function (cat) {
+            var isActive = selectedCategory === cat;
+            return (
+              <button
+                key={cat}
+                type="button"
+                className={isActive ? 'pill pill-active' : 'pill'}
+                onClick={function () { setSelectedCategory(cat); setCurrentPage(1); }}
+              >
+                {cat === 'All' ? '🌐 All Items' :
+                 cat === 'Wet' ? '🟢 Wet Waste' :
+                 cat === 'Dry' ? '🟡 Dry Waste' :
+                 cat === 'Recyclable' ? '🔵 Recyclable' :
+                 '🔴 E-Waste'}
+              </button>
+            );
+          })}
+        </div>
+
         {/* Waste items grid */}
         <div className="waste-grid">
-          {filtered.map(function (item) {
+          {paginatedItems.map(function (item) {
             return (
               <div
                 key={item.id}
@@ -59,6 +100,33 @@ export default function FindWaste() {
 
         {filtered.length === 0 && search !== '' && (
           <p className="no-results">No items found for "{search}". Try a different keyword.</p>
+        )}
+
+        {/* Pagination navigation controls */}
+        {totalPages > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', marginTop: '40px' }}>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={function () { setCurrentPage(Math.max(1, currentPage - 1)); }}
+              disabled={currentPage === 1}
+              style={{ padding: '8px 16px', fontSize: '0.88rem' }}
+            >
+              ← Previous
+            </button>
+            <span style={{ fontSize: '0.9rem', fontWeight: '600', color: 'var(--text-main)' }}>
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={function () { setCurrentPage(Math.min(totalPages, currentPage + 1)); }}
+              disabled={currentPage === totalPages}
+              style={{ padding: '8px 16px', fontSize: '0.88rem' }}
+            >
+              Next →
+            </button>
+          </div>
         )}
 
         {/* Detail modal */}

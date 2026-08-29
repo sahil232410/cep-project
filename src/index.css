@@ -5,28 +5,31 @@
 */
 
 :root {
-  /* Color Palette */
-  --primary: #10b981;          /* Emerald Green */
-  --primary-hover: #059669;    /* Medium Green */
-  --primary-dark: #047857;     /* Deep Forest Green */
-  --primary-light: #ecfdf5;    /* Soft Mint Green */
-  --bg-app: #f8fafc;           /* Light Slate Gray App Background */
+  /* Color Palette - Updated to Community Engagement Project theme */
+  --primary: #2a7c13;          /* Organic Forest Green */
+  --primary-hover: #4e9c35;    /* Softer Leaf Green (less bright/glaring) */
+  --primary-dark: #1d570d;     /* Deep Forest Green */
+  --primary-light: #f1f8ed;    /* Soft Mint Green */
+  --bg-app: #f4f6f0;           /* Soft Muted Sage-Grey Background (easy on eyes) */
   --bg-card: #ffffff;          /* Pure White for cards and sheets */
   
-  --text-main: #334155;        /* Slate 700 main body text */
-  --text-heading: #0f172a;     /* Slate 900 for titles and headers */
-  --text-muted: #64748b;       /* Slate 500 for captions and helper text */
-  --border-color: #e2e8f0;     /* Slate 200 for clean borders */
+  --text-main: #111827;        /* Slate 900 for dark readable body text */
+  --text-heading: #000000;     /* Pure black for headers */
+  --text-muted: #4b5563;       /* Slate 600 for visible muted text */
+  --border-color: #e2e6db;     /* Soft Sage-tinted borders */
   
   /* Category Colors */
-  --wet-color: #854d0e;        /* Brown/Earthy */
-  --wet-bg: #fef9c3;           /* Warm Yellow Tint */
+  --wet-color: #78350f;        /* Earthy Brown */
+  --wet-bg: #fff8cf;           /* Soft Yellow Cream */
   --dry-color: #475569;        /* Slate Gray */
   --dry-bg: #f1f5f9;           /* Light Gray Tint */
-  --recyclable-color: #065f46; /* Deep Green */
-  --recyclable-bg: #d1fae5;    /* Mint Tint */
+  --recyclable-color: #1d570d; /* Forest Green */
+  --recyclable-bg: #e6f4ea;    /* Soft Mint Green Tint */
   --ewaste-color: #991b1b;     /* Crimson Red */
   --ewaste-bg: #fee2e2;        /* Soft Red Tint */
+  
+  /* Accent Warm Cream */
+  --accent-cream: #fbe6c2;     /* Sandy Warm Cream */
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -161,9 +164,10 @@ button {
 }
 
 .btn-secondary {
-  background-color: transparent;
-  color: var(--primary-dark);
+  background-color: #ffffff; /* Solid white background to prevent illustration bleed-through */
+  color: var(--primary);
   border: 1px solid var(--primary);
+  font-weight: 600;
 }
 
 .btn-secondary:hover {
@@ -177,6 +181,10 @@ button {
   color: var(--primary-dark);
   padding: 4px 8px;
   text-decoration: underline;
+}
+
+[data-theme='dark'] .btn-text {
+  color: var(--primary-hover);
 }
 
 .btn-text:hover {
@@ -260,15 +268,19 @@ button {
   cursor: pointer;
 }
 
+[data-theme='dark'] .nav-brand {
+  color: #ffffff;
+}
+
 .logo-leaf {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--primary-light);
-  color: var(--primary);
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
+  background-color: var(--primary);
+  color: #ffffff;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
   position: relative;
 }
 
@@ -299,6 +311,25 @@ button {
 .nav-item.active button {
   background-color: var(--primary);
   color: white;
+}
+
+.theme-toggle-btn-inline {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  transition: all 0.2s;
+  height: 34px;
+}
+
+.theme-toggle-btn-inline:hover {
+  background-color: var(--primary-light);
+  color: var(--primary-dark);
 }
 
 .mobile-menu-btn {
@@ -378,11 +409,60 @@ button {
   font-size: 0.85rem;
 }
 
-/* Page 1 - Home */
 .hero-section {
-  padding: 80px 0 60px;
-  text-align: center;
-  background: radial-gradient(circle at top, var(--primary-light) 0%, transparent 60%);
+  padding: 85px 0;
+  background-image: 
+    linear-gradient(to right, rgba(244, 246, 240, 0.88) 0%, rgba(244, 246, 240, 0.82) 20%, rgba(244, 246, 240, 0.2) 48%, rgba(244, 246, 240, 0) 60%), 
+    url('./assets/hero_bg.jpg');
+  background-size: cover;
+  background-position: right center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.hero-glass-card {
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border: none;
+  padding: 0;
+  max-width: 600px;
+  margin: 0;
+  box-shadow: none;
+  text-align: left;
+}
+
+.hero-title {
+  color: #111827 !important; /* Always deep dark charcoal */
+  text-align: left;
+  margin-left: 0;
+  font-size: 3.2rem;
+  line-height: 1.15;
+  text-shadow: none;
+}
+
+.hero-title span {
+  color: #2a7c13 !important; /* Always forest green */
+}
+
+.hero-tagline {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #2a7c13 !important; /* Always forest green */
+  margin-top: 8px;
+  margin-bottom: 12px;
+  text-align: left;
+  margin-left: 0;
+  text-shadow: none;
+}
+
+.hero-desc {
+  font-size: 1.15rem;
+  color: #111827 !important; /* Always deep charcoal */
+  font-weight: 600;
+  max-width: 580px;
+  margin: 0 0 32px 0;
+  text-align: left;
+  text-shadow: none;
 }
 
 .hero-tag {
@@ -402,6 +482,7 @@ button {
 .hero-section h1 {
   font-size: 3.5rem;
   font-weight: 800;
+  color: #000000;
   margin-bottom: 16px;
   max-width: 800px;
   margin-left: auto;
@@ -409,14 +490,15 @@ button {
 }
 
 .hero-section h1 span {
-  color: var(--primary-dark);
+  color: var(--primary);
 }
 
-.hero-section p {
-  font-size: 1.2rem;
-  color: var(--text-muted);
-  max-width: 600px;
-  margin: 0 auto 32px;
+[data-theme='dark'] .hero-section h1 {
+  color: #ffffff;
+}
+
+[data-theme='dark'] .hero-section h1 span {
+  color: var(--primary-hover);
 }
 
 .hero-ctas {
@@ -450,6 +532,10 @@ button {
   font-weight: 800;
   color: var(--primary-dark);
   margin-bottom: 4px;
+}
+
+[data-theme='dark'] .stat-num {
+  color: var(--primary-hover);
 }
 
 .stat-label {
@@ -2701,7 +2787,7 @@ button {
 
 .about-card p {
   font-size: 0.95rem;
-  color: var(--text-muted);
+  color: var(--text-main);
   line-height: 1.7;
 }
 
