@@ -1,5 +1,5 @@
 import { db, isFirebaseConfigured } from '../firebase';
-import { collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 const COLLECTION_NAME = 'reports';
 
@@ -37,11 +37,33 @@ export const INITIAL_REPORTS = [
   }
 ];
 
+// Seed initial sample mock reports to Firestore if they are missing
+export async function seedInitialReportsIfMissing() {
+  if (!isFirebaseConfigured || !db) return;
+  for (const report of INITIAL_REPORTS) {
+    try {
+      const docRef = doc(db, COLLECTION_NAME, report.id);
+      const snap = await getDoc(docRef);
+      if (!snap.exists()) {
+        await setDoc(docRef, report);
+        console.log("Seeded mock report to Firestore:", report.id);
+      }
+    } catch (err) {
+      console.warn("Could not seed mock report:", report.id, err);
+    }
+  }
+}
+
 // Subscribe to real-time reports updates (Firebase or LocalStorage fallback)
 export function subscribeToReports(onUpdate) {
   if (isFirebaseConfigured && db) {
     try {
+      // Ensure initial sample data exists in Cloud Firestore
+      seedInitialReportsIfMissing();
+
+      console.log("Connecting to Firebase Firestore 'reports' collection...");
       const unsub = onSnapshot(collection(db, COLLECTION_NAME), (snapshot) => {
+        console.log("Firestore snapshot received! Docs count:", snapshot.size);
         if (!snapshot.empty) {
           const list = snapshot.docs.map(d => ({ ...d.data(), id: d.id }));
           list.sort((a, b) => (b.id || '').localeCompare(a.id || ''));
@@ -51,18 +73,9 @@ export function subscribeToReports(onUpdate) {
           } catch (e) {
             console.error(e);
           }
-        } else {
-          // If Firestore is empty on the first run, seed with initial reports
-          INITIAL_REPORTS.forEach(async (report) => {
-            try {
-              await setDoc(doc(db, COLLECTION_NAME, report.id), report);
-            } catch (e) {
-              console.error("Firestore seed error", e);
-            }
-          });
         }
       }, (err) => {
-        console.warn("Firestore listener warning:", err);
+        console.error("Firestore real-time listener error:", err);
       });
       return unsub;
     } catch (e) {
@@ -98,9 +111,14 @@ export async function createReport(newReport, currentReports, setReports) {
   // Push to Firebase Cloud Firestore
   if (isFirebaseConfigured && db) {
     try {
+      console.log("Writing report to Firestore:", newReport.id);
       await setDoc(doc(db, COLLECTION_NAME, newReport.id), newReport);
+      console.log("Successfully written to Firestore:", newReport.id);
     } catch (err) {
-      console.error("Failed to save report to Firestore", err);
+      console.error("Failed to save report to Firestore:", err);
+      if (err.code === 'permission-denied') {
+        alert("Firestore Permission Denied: Please check Firebase Console > Firestore Database > Rules tab, and set 'allow read, write: if true;' then click Publish.");
+      }
     }
   }
 }

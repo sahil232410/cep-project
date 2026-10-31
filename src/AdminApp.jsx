@@ -34,16 +34,16 @@ export default function AdminApp() {
   };
 
   // Stub function for tracking ID (unused in standalone admin app)
-  const handleTrackIdStub = () => {};
+  const handleTrackIdStub = () => { };
 
   return (
     <div className="app-wrapper">
       <main className="main-content" style={{ padding: 0 }}>
-        <AdminDashboard 
-          reports={reports} 
-          setReports={setReports} 
-          setTrackId={handleTrackIdStub} 
-          setCurrentPage={handleRedirectToPublic} 
+        <AdminDashboard
+          reports={reports}
+          setReports={setReports}
+          setTrackId={handleTrackIdStub}
+          setCurrentPage={handleRedirectToPublic}
         />
       </main>
     </div>

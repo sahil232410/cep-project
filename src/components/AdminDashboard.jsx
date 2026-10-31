@@ -4,7 +4,7 @@ import { updateReport, deleteReportById, clearAllReports, batchImportReports, IN
 
 export default function AdminDashboard({ reports, setReports, setTrackId, setCurrentPage }) {
   // Authentication states
-  var [isAuthenticated, setIsAuthenticated] = useState(function() {
+  var [isAuthenticated, setIsAuthenticated] = useState(function () {
     return sessionStorage.getItem('adminAuth') === 'true';
   });
   var [password, setPassword] = useState('');
@@ -12,7 +12,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
 
   // Tabs within dashboard: 'list' or 'analytics'
   var [activeSubTab, setActiveSubTab] = useState('list');
-  
+
   // Filters and searches
   var [filterStatus, setFilterStatus] = useState('All');
   var [filterType, setFilterType] = useState('All');
@@ -23,7 +23,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
   var [editStatus, setEditStatus] = useState('');
 
   // CSV parsing helper
-  var parseCSVLine = function(line) {
+  var parseCSVLine = function (line) {
     var result = [];
     var current = '';
     var inQuotes = false;
@@ -43,12 +43,12 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
   };
 
   // Google Form CSV Uploader handler
-  var handleCsvUpload = function(e) {
+  var handleCsvUpload = function (e) {
     var file = e.target.files[0];
     if (!file) return;
 
     var reader = new FileReader();
-    reader.onload = function(evt) {
+    reader.onload = function (evt) {
       var contents = evt.target.result;
       var lines = contents.split(/\r?\n/);
       if (lines.length <= 1) {
@@ -58,7 +58,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
 
       // Parse headers
       var headers = parseCSVLine(lines[0]);
-      
+
       // Dynamic column indices based on header keywords
       var colIndices = {
         date: -1,
@@ -92,7 +92,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
 
       // Find current max ID to increment
       if (reports && reports.length > 0) {
-        var numericIds = reports.map(function(r) {
+        var numericIds = reports.map(function (r) {
           if (!r || !r.id || typeof r.id !== 'string') return 1000;
           var match = r.id.match(/ET-(\d+)/);
           return match ? parseInt(match[1]) : 1000;
@@ -148,10 +148,10 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
       }
 
       if (newReports.length > 0) {
-        var filteredNew = newReports.filter(function(nr) {
-          return !reports.some(function(pr) {
-            return pr.location.toLowerCase() === nr.location.toLowerCase() && 
-                   pr.description.toLowerCase() === nr.description.toLowerCase();
+        var filteredNew = newReports.filter(function (nr) {
+          return !reports.some(function (pr) {
+            return pr.location.toLowerCase() === nr.location.toLowerCase() &&
+              pr.description.toLowerCase() === nr.description.toLowerCase();
           });
         });
 
@@ -170,7 +170,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
   };
 
   // Auth Submit handler
-  var handleLogin = function(e) {
+  var handleLogin = function (e) {
     e.preventDefault();
     if (password === 'admin123') {
       setIsAuthenticated(true);
@@ -182,7 +182,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
   };
 
   // Logout handler
-  var handleLogout = function() {
+  var handleLogout = function () {
     setIsAuthenticated(false);
     sessionStorage.removeItem('adminAuth');
     setPassword('');
@@ -190,17 +190,17 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
 
   // Calculations for stats
   var totalCount = reports.length;
-  var reportedCount = reports.filter(function(r) { return r.status === 'Reported'; }).length;
-  var reviewCount = reports.filter(function(r) { return r.status === 'Under Review'; }).length;
-  var progressCount = reports.filter(function(r) { return r.status === 'In Progress'; }).length;
-  var resolvedCount = reports.filter(function(r) { return r.status === 'Resolved'; }).length;
+  var reportedCount = reports.filter(function (r) { return r.status === 'Reported'; }).length;
+  var reviewCount = reports.filter(function (r) { return r.status === 'Under Review'; }).length;
+  var progressCount = reports.filter(function (r) { return r.status === 'In Progress'; }).length;
+  var resolvedCount = reports.filter(function (r) { return r.status === 'Resolved'; }).length;
 
   // Filters
-  var filteredReports = reports.filter(function(r) {
+  var filteredReports = reports.filter(function (r) {
     var statusMatch = filterStatus === 'All' || r.status === filterStatus;
     var typeMatch = filterType === 'All' || r.wasteType === filterType;
     var query = searchQuery.toLowerCase().trim();
-    var searchMatch = !query || 
+    var searchMatch = !query ||
       r.id.toLowerCase().indexOf(query) !== -1 ||
       r.location.toLowerCase().indexOf(query) !== -1 ||
       r.reporterName.toLowerCase().indexOf(query) !== -1 ||
@@ -209,58 +209,58 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
     return statusMatch && typeMatch && searchMatch;
   });
 
-  var handleOpenReport = function(report) {
+  var handleOpenReport = function (report) {
     setSelectedReport(report);
     setEditStatus(report.status);
   };
 
-  var handleSaveStatus = function() {
+  var handleSaveStatus = function () {
     if (!selectedReport) return;
     updateReport(selectedReport.id, editStatus, reports, setReports);
     setSelectedReport({ ...selectedReport, status: editStatus });
   };
 
-  var handleDeleteReport = function(id) {
+  var handleDeleteReport = function (id) {
     if (window.confirm('Delete report ' + id + '?')) {
       deleteReportById(id, reports, setReports);
       setSelectedReport(null);
     }
   };
 
-  var handleClearAll = function() {
+  var handleClearAll = function () {
     if (window.confirm('Are you sure you want to delete all reports? This will remove all complaints.')) {
       clearAllReports(setReports);
       setSelectedReport(null);
     }
   };
 
-  var handleResetDemo = function() {
+  var handleResetDemo = function () {
     batchImportReports(INITIAL_REPORTS, [], setReports);
     setSelectedReport(null);
   };
 
-  var handleTrackReport = function(id) {
+  var handleTrackReport = function (id) {
     setTrackId(id);
     setCurrentPage('track-report');
   };
 
   // Analytics
-  var getReportsByWasteType = function() {
+  var getReportsByWasteType = function () {
     var types = ['Wet Waste', 'Dry Waste', 'Plastic Waste', 'E-Waste', 'Mixed Waste', 'Other'];
-    return types.map(function(type) {
-      return { type: type, count: reports.filter(function(r) { return r.wasteType === type; }).length };
+    return types.map(function (type) {
+      return { type: type, count: reports.filter(function (r) { return r.wasteType === type; }).length };
     });
   };
 
-  var getReportsByLocation = function() {
+  var getReportsByLocation = function () {
     var counts = {};
-    reports.forEach(function(r) {
+    reports.forEach(function (r) {
       var loc = r.location.split(',')[0].trim();
       counts[loc] = (counts[loc] || 0) + 1;
     });
-    return Object.keys(counts).map(function(key) {
+    return Object.keys(counts).map(function (key) {
       return { name: key, count: counts[key] };
-    }).sort(function(a, b) { return b.count - a.count; }).slice(0, 5);
+    }).sort(function (a, b) { return b.count - a.count; }).slice(0, 5);
   };
 
   var reportsByType = getReportsByWasteType();
@@ -276,7 +276,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
             <div style={{ display: 'inline-flex', padding: '12px', background: 'var(--primary-light)', color: 'var(--primary)', borderRadius: '50%', marginBottom: '16px' }}>
               <Lock size={28} />
             </div>
-            
+
             <h3 style={{ fontSize: '1.25rem', marginBottom: '8px' }}>Admin Portal Access</h3>
             <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '24px' }}>
               Enter the coordinator passcode to access reports and analytics.
@@ -284,12 +284,12 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
 
             <div className="form-group" style={{ marginBottom: '16px', textAlign: 'left' }}>
               <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Passcode</label>
-              <input 
+              <input
                 type="password"
                 className="form-control"
                 placeholder="••••••••"
                 value={password}
-                onChange={function(e) { setPassword(e.target.value); }}
+                onChange={function (e) { setPassword(e.target.value); }}
                 required
                 style={{ width: '100%', padding: '10px 12px', marginTop: '6px' }}
               />
@@ -305,10 +305,10 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
               Access Dashboard
             </button>
 
-            <button 
-              type="button" 
-              onClick={function() { setCurrentPage('home'); }}
-              style={{ 
+            <button
+              type="button"
+              onClick={function () { setCurrentPage('home'); }}
+              style={{
                 background: 'none',
                 border: 'none',
                 color: 'var(--text-muted)',
@@ -332,29 +332,29 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
   return (
     <section className="admin-page" id="admin-dashboard">
       <div className="container">
-        
+
         {/* Title & Navigation */}
         <div className="admin-header">
           <div>
             <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '0 0 6px 0' }}>
-              Admin Complaint Dashboard 
+              Admin Complaint Dashboard
               <span style={{ fontSize: '0.75rem', fontWeight: 'normal', background: 'var(--primary-light)', color: 'var(--primary-dark)', padding: '2px 8px', borderRadius: '4px' }}>
                 Secure Portal
               </span>
             </h2>
             <p className="page-subtitle" style={{ margin: 0 }}>Review submitted reports, update collection statuses, and analyze community trends.</p>
           </div>
-          
+
           {/* Sub Navigation & Logout */}
           <div className="admin-header-actions">
             <div className="admin-tab-group">
-              <button 
+              <button
                 type="button"
                 className="btn"
-                onClick={function() { setActiveSubTab('list'); }}
-                style={{ 
-                  padding: '8px 16px', 
-                  fontSize: '0.85rem', 
+                onClick={function () { setActiveSubTab('list'); }}
+                style={{
+                  padding: '8px 16px',
+                  fontSize: '0.85rem',
                   background: activeSubTab === 'list' ? 'var(--primary)' : 'transparent',
                   color: activeSubTab === 'list' ? 'white' : 'var(--text-main)',
                   border: 'none',
@@ -366,13 +366,13 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
               >
                 <List size={16} /> Manage Complaints
               </button>
-              <button 
+              <button
                 type="button"
                 className="btn"
-                onClick={function() { setActiveSubTab('analytics'); }}
-                style={{ 
-                  padding: '8px 16px', 
-                  fontSize: '0.85rem', 
+                onClick={function () { setActiveSubTab('analytics'); }}
+                style={{
+                  padding: '8px 16px',
+                  fontSize: '0.85rem',
                   background: activeSubTab === 'analytics' ? 'var(--primary)' : 'transparent',
                   color: activeSubTab === 'analytics' ? 'white' : 'var(--text-main)',
                   border: 'none',
@@ -385,20 +385,20 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                 <BarChart2 size={16} /> Waste Analytics
               </button>
             </div>
-            
+
             <div className="admin-header-btns">
-              <button 
-                type="button" 
-                className="btn btn-secondary" 
-                onClick={function() { setCurrentPage('home'); }}
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={function () { setCurrentPage('home'); }}
                 style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', padding: '8px 12px', background: '#ffffff', color: 'var(--primary)' }}
               >
                 Public Site
               </button>
 
-              <button 
-                type="button" 
-                className="btn" 
+              <button
+                type="button"
+                className="btn"
                 onClick={handleLogout}
                 style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', padding: '8px 12px', background: 'var(--primary-dark)', color: '#ffffff', border: 'none' }}
               >
@@ -418,22 +418,22 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
               Download your Google Form responses spreadsheet as a <strong>.csv</strong> file, then upload it here to load submissions into this panel.
             </p>
           </div>
-          
+
           <div className="admin-csv-actions">
-            <input 
-              type="file" 
-              accept=".csv" 
-              id="google-form-csv" 
-              onChange={handleCsvUpload} 
-              style={{ display: 'none' }} 
+            <input
+              type="file"
+              accept=".csv"
+              id="google-form-csv"
+              onChange={handleCsvUpload}
+              style={{ display: 'none' }}
             />
-            <label 
-              htmlFor="google-form-csv" 
+            <label
+              htmlFor="google-form-csv"
               className="btn btn-primary"
-              style={{ 
-                display: 'inline-flex', 
-                alignItems: 'center', 
-                gap: '8px', 
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
                 cursor: 'pointer',
                 fontSize: '0.88rem',
                 padding: '10px 16px'
@@ -443,9 +443,9 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
             </label>
 
             {reports.length > 0 ? (
-              <button 
-                type="button" 
-                className="btn btn-secondary" 
+              <button
+                type="button"
+                className="btn btn-secondary"
                 onClick={handleClearAll}
                 style={{ fontSize: '0.85rem', padding: '10px 14px', background: '#fee2e2', color: '#991b1b', border: '1px solid #fecaca' }}
                 title="Wipe mock data and all reports to start fresh"
@@ -453,9 +453,9 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                 Clear All Reports
               </button>
             ) : (
-              <button 
-                type="button" 
-                className="btn btn-secondary" 
+              <button
+                type="button"
+                className="btn btn-secondary"
                 onClick={handleResetDemo}
                 style={{ fontSize: '0.85rem', padding: '10px 14px', background: '#dbeafe', color: '#1e40af', border: '1px solid #bfdbfe' }}
               >
@@ -505,19 +505,19 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
           <div className="card" style={{ overflow: 'hidden' }}>
             <div className="admin-filter-bar">
               <div className="admin-filter-inputs">
-                <input 
-                  type="text" 
-                  placeholder="Search ID, Location or Reporter..." 
+                <input
+                  type="text"
+                  placeholder="Search ID, Location or Reporter..."
                   className="form-control admin-search-input"
                   value={searchQuery}
-                  onChange={function(e) { setSearchQuery(e.target.value); }}
+                  onChange={function (e) { setSearchQuery(e.target.value); }}
                 />
 
                 <div className="admin-filter-row-selects">
-                  <select 
+                  <select
                     className="form-control admin-select-filter"
                     value={filterStatus}
-                    onChange={function(e) { setFilterStatus(e.target.value); }}
+                    onChange={function (e) { setFilterStatus(e.target.value); }}
                   >
                     <option value="All">All Statuses</option>
                     <option value="Reported">Reported</option>
@@ -526,10 +526,10 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                     <option value="Resolved">Resolved</option>
                   </select>
 
-                  <select 
+                  <select
                     className="form-control admin-select-filter"
                     value={filterType}
-                    onChange={function(e) { setFilterType(e.target.value); }}
+                    onChange={function (e) { setFilterType(e.target.value); }}
                   >
                     <option value="All">All Waste Types</option>
                     <option value="Wet Waste">Wet Waste</option>
@@ -568,7 +568,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                       </td>
                     </tr>
                   ) : (
-                    filteredReports.map(function(report) {
+                    filteredReports.map(function (report) {
                       var statusBg = '#e2e8f0';
                       var statusColor = '#334155';
                       if (report.status === 'Reported') { statusBg = '#fee2e2'; statusColor = '#991b1b'; }
@@ -596,16 +596,16 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                           </td>
                           <td style={{ padding: '14px 16px', textAlign: 'center' }}>
                             <div style={{ display: 'inline-flex', gap: '8px' }}>
-                              <button 
-                                className="btn-secondary btn" 
-                                onClick={function() { handleOpenReport(report); }}
+                              <button
+                                className="btn-secondary btn"
+                                onClick={function () { handleOpenReport(report); }}
                                 style={{ padding: '6px 12px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px' }}
                               >
                                 <Eye size={12} /> Manage
                               </button>
-                              <button 
-                                className="btn-danger-text" 
-                                onClick={function() { handleDeleteReport(report.id); }}
+                              <button
+                                className="btn-danger-text"
+                                onClick={function () { handleDeleteReport(report.id); }}
                                 style={{ color: '#ef4444', padding: '4px 8px', fontSize: '0.8rem' }}
                                 title="Delete complaint"
                               >
@@ -628,7 +628,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                   No complaints match your filters.
                 </div>
               ) : (
-                filteredReports.map(function(report) {
+                filteredReports.map(function (report) {
                   var statusBg = '#e2e8f0';
                   var statusColor = '#334155';
                   if (report.status === 'Reported') { statusBg = '#fee2e2'; statusColor = '#991b1b'; }
@@ -658,16 +658,16 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                           {report.wasteType}
                         </span>
                         <div style={{ display: 'flex', gap: '8px' }}>
-                          <button 
-                            className="btn-secondary btn" 
-                            onClick={function() { handleOpenReport(report); }}
+                          <button
+                            className="btn-secondary btn"
+                            onClick={function () { handleOpenReport(report); }}
                             style={{ padding: '6px 12px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px' }}
                           >
                             <Eye size={12} /> Manage
                           </button>
-                          <button 
-                            className="btn-danger-text" 
-                            onClick={function() { handleDeleteReport(report.id); }}
+                          <button
+                            className="btn-danger-text"
+                            onClick={function () { handleDeleteReport(report.id); }}
                             style={{ color: '#ef4444', padding: '6px 8px', fontSize: '0.8rem' }}
                             title="Delete complaint"
                           >
@@ -688,16 +688,16 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
         {activeSubTab === 'analytics' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div className="admin-analytics-grid">
-              
+
               {/* SVG Ring */}
               <div className="card text-center" style={{ padding: '28px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyItems: 'center' }}>
                 <h4 style={{ fontSize: '1rem', color: 'var(--text-heading)', marginBottom: '16px' }}>Complaint Resolution Success Rate</h4>
-                
+
                 <div style={{ position: 'relative', width: '160px', height: '160px', marginBottom: '16px' }}>
                   <svg width="100%" height="100%" viewBox="0 0 36 36" style={{ transform: 'rotate(-90deg)' }}>
                     <circle cx="18" cy="18" r="15.915" fill="none" stroke="var(--border-color)" strokeWidth="3" />
-                    <circle cx="18" cy="18" r="15.915" fill="none" stroke="var(--primary)" strokeWidth="3" 
-                      strokeDasharray={resolutionRate + ' ' + (100 - resolutionRate)} 
+                    <circle cx="18" cy="18" r="15.915" fill="none" stroke="var(--primary)" strokeWidth="3"
+                      strokeDasharray={resolutionRate + ' ' + (100 - resolutionRate)}
                       style={{ transition: 'stroke-dasharray 0.5s ease-in-out' }}
                     />
                   </svg>
@@ -706,7 +706,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                     <span style={{ display: 'block', fontSize: '0.72rem', color: 'var(--text-muted)' }}>Cleaned</span>
                   </div>
                 </div>
-                
+
                 <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>
                   A total of <strong>{resolvedCount}</strong> reported dumping zones have been cleared by local crew sweeps.
                 </p>
@@ -719,7 +719,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                   <p style={{ fontStyle: 'italic', color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '40px 0' }}>No locations recorded.</p>
                 ) : (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                    {reportsByLoc.map(function(loc, idx) {
+                    {reportsByLoc.map(function (loc, idx) {
                       var maxCount = reportsByLoc[0].count;
                       var widthPct = maxCount > 0 ? (loc.count / maxCount) * 100 : 0;
                       return (
@@ -743,10 +743,10 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
             <div className="card" style={{ padding: '24px' }}>
               <h4 style={{ fontSize: '1.05rem', color: 'var(--text-heading)', marginBottom: '20px' }}>Reports Breakdown by Waste Category</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {reportsByType.map(function(item) {
-                  var maxTypeCount = Math.max.apply(null, reportsByType.map(function(i) { return i.count; }));
+                {reportsByType.map(function (item) {
+                  var maxTypeCount = Math.max.apply(null, reportsByType.map(function (i) { return i.count; }));
                   var pct = maxTypeCount > 0 ? (item.count / maxTypeCount) * 100 : 0;
-                  
+
                   var categoryColor = 'var(--text-muted)';
                   if (item.type === 'Wet Waste') categoryColor = 'var(--wet-color)';
                   else if (item.type === 'Dry Waste') categoryColor = 'var(--dry-color)';
@@ -771,9 +771,9 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
 
         {/* Modal: View Details & Update Status */}
         {selectedReport && (
-          <div className="modal-overlay" onClick={function() { setSelectedReport(null); }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
-            <div className="modal-content admin-modal-content" onClick={function(e) { e.stopPropagation(); }} style={{ padding: '24px', maxWidth: '640px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
-              <button className="modal-close" onClick={function() { setSelectedReport(null); }}>✕</button>
+          <div className="modal-overlay" onClick={function () { setSelectedReport(null); }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
+            <div className="modal-content admin-modal-content" onClick={function (e) { e.stopPropagation(); }} style={{ padding: '24px', maxWidth: '640px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
+              <button className="modal-close" onClick={function () { setSelectedReport(null); }}>✕</button>
 
               <h3 style={{ fontSize: '1.3rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px', marginBottom: '16px' }}>
                 Manage Report Details
@@ -844,10 +844,10 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
               <div style={{ background: 'var(--bg-app)', padding: '14px 16px', borderRadius: '8px', marginBottom: '20px', border: '1px solid var(--border-color)' }}>
                 <label style={{ fontSize: '0.85rem', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Update Status</label>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                  <select 
+                  <select
                     className="form-control"
                     value={editStatus}
-                    onChange={function(e) { setEditStatus(e.target.value); }}
+                    onChange={function (e) { setEditStatus(e.target.value); }}
                     style={{ flex: 1, minWidth: '160px', padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-card)' }}
                   >
                     <option value="Reported">🔴 Reported</option>
@@ -860,8 +860,8 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
-                <button type="button" className="btn btn-secondary" onClick={function() { handleTrackReport(selectedReport.id); }} style={{ fontSize: '0.85rem' }}>View Timeline</button>
-                <button type="button" className="btn btn-secondary" onClick={function() { setSelectedReport(null); }} style={{ fontSize: '0.85rem' }}>Close</button>
+                <button type="button" className="btn btn-secondary" onClick={function () { handleTrackReport(selectedReport.id); }} style={{ fontSize: '0.85rem' }}>View Timeline</button>
+                <button type="button" className="btn btn-secondary" onClick={function () { setSelectedReport(null); }} style={{ fontSize: '0.85rem' }}>Close</button>
               </div>
 
             </div>
