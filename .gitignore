@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+
+# CEP Report artifacts and generated PDFs
+cep_report/
+*.pdf
+Sahil_Mehta_Roll53_CEP_Report.pdf

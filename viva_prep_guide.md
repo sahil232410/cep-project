@@ -22,7 +22,7 @@ We took the initial environmental awareness website (*EcoGuide*) and refactored 
 2.  **Created public reporting tool**: Built an interactive **Report Waste** form that captures Location, Waste Type, Description, Date, and image uploads (converting photos into Base64 strings to store in the browser).
 3.  **Built an ID Generator**: Wrote an incremental ID builder that automatically parses logged tickets and generates sequential tickets starting from `ET-1001` (EcoTrack-1001).
 4.  **Developed visual tracking**: Built a **Track Report** system featuring a dynamic progress timeline (Reported ➔ Under Review ➔ In Progress ➔ Resolved) displaying active loader animations.
-5.  **Secured Admin Portal**: Relocated the coordinator view out of the public navbar to a locked footer link (**🔒 Admin Portal**), protected by a passcode gate (`admin123`).
+5.  **Secured Admin Portal**: Relocated the coordinator view out of the public navbar to a dedicated protected portal (`/admin/` or via the Home page's Waste Dashboard card), protected by a passcode gate (`admin123`).
 6.  **Built a Google Form CSV Uploader**: Added a drag-and-drop CSV importer inside the Admin Portal. It parses Google Form response sheets, maps column headers dynamically, and merges external complaints into the dashboard statistics and SVG analytics charts.
 7.  **Cleaned the Codebase**: Removed all dead code (like the old `Community` pages) to keep the project clean and fully explainable.
 
@@ -41,7 +41,7 @@ When presenting, you should explain the system as three interconnected operation
 4.  **Instant Tracking**: The resident gets a success screen and is redirected to **Track Report**. By typing `ET-1004`, they see the details of their complaint and a timeline showing that the ticket is in phase 1 (`Reported`).
 
 ### Flow B: The Admin/Coordinator Flow (Action & Resolution)
-1.  **Secure Login**: The ward supervisor or admin clicks **🔒 Admin Portal** in the footer, enters passcode `admin123`, and accesses the dashboard.
+1.  **Secure Login**: The ward supervisor or admin opens `/admin/` (or clicks **Waste Dashboard** on the Home page), enters passcode `admin123`, and accesses the dashboard.
 2.  **Status Monitoring**: The dashboard reads all tickets from `localStorage` and visualizes statistics:
     *   *Total complaints vs pending complaints*.
     *   *Resolution Rate progress ring*.

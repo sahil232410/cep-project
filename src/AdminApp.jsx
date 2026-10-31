@@ -6,7 +6,7 @@ export default function AdminApp() {
   const [reports, setReports] = useState(() => {
     try {
       const saved = localStorage.getItem('ecoTrackReports');
-      if (saved) {
+      if (saved !== null) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed)) return parsed;
       }
@@ -47,14 +47,62 @@ export default function AdminApp() {
         imageUrl: ''
       }
     ];
-    localStorage.setItem('ecoTrackReports', JSON.stringify(initialReports));
+    try {
+      localStorage.setItem('ecoTrackReports', JSON.stringify(initialReports));
+    } catch (e) {
+      console.error(e);
+    }
     return initialReports;
   });
 
-  // Sync to local storage
+  // Sync state to local storage safely
   useEffect(() => {
-    localStorage.setItem('ecoTrackReports', JSON.stringify(reports));
+    try {
+      localStorage.setItem('ecoTrackReports', JSON.stringify(reports));
+    } catch (e) {
+      console.error("Failed to save reports to localStorage", e);
+    }
   }, [reports]);
+
+  // Real-time synchronization across browser tabs and on window focus
+  useEffect(() => {
+    const reloadFromStorage = () => {
+      try {
+        const saved = localStorage.getItem('ecoTrackReports');
+        if (saved !== null) {
+          const parsed = JSON.parse(saved);
+          if (Array.isArray(parsed)) {
+            setReports(parsed);
+          }
+        }
+      } catch (err) {
+        console.error("Error syncing reports from localStorage", err);
+      }
+    };
+
+    const handleStorageEvent = (e) => {
+      if (e.key === 'ecoTrackReports' && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (Array.isArray(parsed)) {
+            setReports(parsed);
+          }
+        } catch (err) {
+          console.error("Error parsing storage change", err);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageEvent);
+    window.addEventListener('focus', reloadFromStorage);
+    window.addEventListener('visibilitychange', reloadFromStorage);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageEvent);
+      window.removeEventListener('focus', reloadFromStorage);
+      window.removeEventListener('visibilitychange', reloadFromStorage);
+    };
+  }, []);
 
   // Handle redirection to public citizen portal (index.html)
   const handleRedirectToPublic = () => {

@@ -29,7 +29,7 @@ export default function ReportWaste({ reports, setReports, setTrackId, setCurren
     return 'ET-' + (maxId + 1);
   };
 
-  // Image Upload handler
+  // Image Upload handler with auto-compression to prevent LocalStorage QuotaExceededError
   var handleImageChange = function(e) {
     var file = e.target.files[0];
     if (!file) return;
@@ -41,8 +41,34 @@ export default function ReportWaste({ reports, setReports, setTrackId, setCurren
     }
 
     var reader = new FileReader();
-    reader.onloadend = function() {
-      setImagePreview(reader.result);
+    reader.onload = function(readerEvent) {
+      var img = new Image();
+      img.onload = function() {
+        var maxDim = 800;
+        var width = img.width;
+        var height = img.height;
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        var canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Compress image to JPEG (~30KB-60KB) to ensure localStorage quota is never exceeded
+        var compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+        setImagePreview(compressedBase64);
+      };
+      img.src = readerEvent.target.result;
     };
     reader.readAsDataURL(file);
   };

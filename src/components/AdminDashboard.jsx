@@ -234,6 +234,50 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
     }
   };
 
+  var handleClearAll = function() {
+    if (window.confirm('Are you sure you want to delete all reports? This will remove all complaints.')) {
+      setReports([]);
+      setSelectedReport(null);
+    }
+  };
+
+  var handleResetDemo = function() {
+    var initialReports = [
+      {
+        id: 'ET-1001',
+        reporterName: 'Rahul Verma',
+        location: 'XYZ Garden',
+        wasteType: 'Plastic Waste',
+        description: 'Large pile of single-use plastic cups and beverage bottles dumped behind the public playground.',
+        date: '2026-08-25',
+        status: 'Reported',
+        imageUrl: ''
+      },
+      {
+        id: 'ET-1002',
+        reporterName: 'Priya Sharma',
+        location: 'ABC Road',
+        wasteType: 'Wet Waste',
+        description: 'Organic kitchen waste and vegetable scraps dumped on the sidewalk, attracting stray animals.',
+        date: '2026-08-25',
+        status: 'In Progress',
+        imageUrl: ''
+      },
+      {
+        id: 'ET-1003',
+        reporterName: 'Aniket Kamble',
+        location: 'Main Market',
+        wasteType: 'E-Waste',
+        description: 'Old electronic parts, broken charging adapters, and copper wires discarded in the open corner.',
+        date: '2026-08-24',
+        status: 'Resolved',
+        imageUrl: ''
+      }
+    ];
+    setReports(initialReports);
+    setSelectedReport(null);
+  };
+
   var handleTrackReport = function(id) {
     setTrackId(id);
     setCurrentPage('track-report');
@@ -325,13 +369,13 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
   }
 
   return (
-    <section className="admin-page" id="admin-dashboard" style={{ padding: '40px 0' }}>
+    <section className="admin-page" id="admin-dashboard">
       <div className="container">
         
-        {/* Title */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px', marginBottom: '32px' }}>
+        {/* Title & Navigation */}
+        <div className="admin-header">
           <div>
-            <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <h2 style={{ display: 'flex', alignItems: 'center', gap: '10px', margin: '0 0 6px 0' }}>
               Admin Complaint Dashboard 
               <span style={{ fontSize: '0.75rem', fontWeight: 'normal', background: 'var(--primary-light)', color: 'var(--primary-dark)', padding: '2px 8px', borderRadius: '4px' }}>
                 Secure Portal
@@ -341,8 +385,8 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
           </div>
           
           {/* Sub Navigation & Logout */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', gap: '8px', background: 'var(--bg-card)', padding: '6px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
+          <div className="admin-header-actions">
+            <div className="admin-tab-group">
               <button 
                 type="button"
                 className="btn"
@@ -381,29 +425,31 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
               </button>
             </div>
             
-            <button 
-              type="button" 
-              className="btn btn-secondary" 
-              onClick={function() { setCurrentPage('home'); }}
-              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', padding: '8px 12px', background: '#ffffff', color: 'var(--primary)' }}
-            >
-              Public Site
-            </button>
+            <div className="admin-header-btns">
+              <button 
+                type="button" 
+                className="btn btn-secondary" 
+                onClick={function() { setCurrentPage('home'); }}
+                style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', padding: '8px 12px', background: '#ffffff', color: 'var(--primary)' }}
+              >
+                Public Site
+              </button>
 
-            <button 
-              type="button" 
-              className="btn" 
-              onClick={handleLogout}
-              style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', padding: '8px 12px', background: 'var(--primary-dark)', color: '#ffffff', border: 'none' }}
-            >
-              Logout
-            </button>
+              <button 
+                type="button" 
+                className="btn" 
+                onClick={handleLogout}
+                style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', padding: '8px 12px', background: 'var(--primary-dark)', color: '#ffffff', border: 'none' }}
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Google Form CSV Sync Card */}
-        <div className="card" style={{ padding: '20px', marginBottom: '32px', borderLeft: '4px solid var(--primary)', background: 'var(--primary-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-          <div style={{ flex: 1, minWidth: '280px' }}>
+        <div className="card admin-csv-card">
+          <div style={{ flex: 1, minWidth: '220px' }}>
             <h4 style={{ margin: '0 0 6px 0', color: 'var(--primary-dark)', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '1rem' }}>
               📥 Sync Google Form Responses
             </h4>
@@ -412,7 +458,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
             </p>
           </div>
           
-          <div>
+          <div className="admin-csv-actions">
             <input 
               type="file" 
               accept=".csv" 
@@ -434,38 +480,59 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
             >
               <Upload size={16} /> Import Google Form CSV
             </label>
+
+            {reports.length > 0 ? (
+              <button 
+                type="button" 
+                className="btn btn-secondary" 
+                onClick={handleClearAll}
+                style={{ fontSize: '0.85rem', padding: '10px 14px', background: '#fee2e2', color: '#991b1b', border: '1px solid #fecaca' }}
+                title="Wipe mock data and all reports to start fresh"
+              >
+                Clear All Reports
+              </button>
+            ) : (
+              <button 
+                type="button" 
+                className="btn btn-secondary" 
+                onClick={handleResetDemo}
+                style={{ fontSize: '0.85rem', padding: '10px 14px', background: '#dbeafe', color: '#1e40af', border: '1px solid #bfdbfe' }}
+              >
+                Restore Sample Data
+              </button>
+            )}
           </div>
         </div>
 
         {/* 4 Summary Stats Cards */}
-        <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px', marginBottom: '32px' }}>
-          <div className="stat-card card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px', borderLeft: '4px solid var(--text-muted)' }}>
+        <div className="admin-stats-grid">
+          <div className="admin-stat-card" style={{ borderLeft: '4px solid var(--text-muted)' }}>
             <div>
-              <div className="stat-num" style={{ fontSize: '2rem' }}>{totalCount}</div>
+              <div className="stat-num" style={{ fontSize: '2rem', fontWeight: 'bold' }}>{totalCount}</div>
               <div className="stat-label" style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Total Reports</div>
             </div>
             <div style={{ fontSize: '2rem', opacity: 0.2 }}><FileText size={32} /></div>
           </div>
 
-          <div className="stat-card card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px', borderLeft: '4px solid #ef4444' }}>
+          <div className="admin-stat-card" style={{ borderLeft: '4px solid #ef4444' }}>
             <div>
-              <div className="stat-num" style={{ fontSize: '2rem', color: '#ef4444' }}>{reportedCount + reviewCount}</div>
+              <div className="stat-num" style={{ fontSize: '2rem', fontWeight: 'bold', color: '#ef4444' }}>{reportedCount + reviewCount}</div>
               <div className="stat-label" style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Pending Review</div>
             </div>
             <div style={{ fontSize: '2rem', opacity: 0.2, color: '#ef4444' }}><AlertCircle size={32} /></div>
           </div>
 
-          <div className="stat-card card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px', borderLeft: '4px solid #3b82f6' }}>
+          <div className="admin-stat-card" style={{ borderLeft: '4px solid #3b82f6' }}>
             <div>
-              <div className="stat-num" style={{ fontSize: '2rem', color: '#3b82f6' }}>{progressCount}</div>
+              <div className="stat-num" style={{ fontSize: '2rem', fontWeight: 'bold', color: '#3b82f6' }}>{progressCount}</div>
               <div className="stat-label" style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>In Progress</div>
             </div>
             <div style={{ fontSize: '2rem', opacity: 0.2, color: '#3b82f6' }}><RefreshCw size={32} /></div>
           </div>
 
-          <div className="stat-card card" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '20px 24px', borderLeft: '4px solid var(--primary)' }}>
+          <div className="admin-stat-card" style={{ borderLeft: '4px solid var(--primary)' }}>
             <div>
-              <div className="stat-num" style={{ fontSize: '2rem', color: 'var(--primary)' }}>{resolvedCount}</div>
+              <div className="stat-num" style={{ fontSize: '2rem', fontWeight: 'bold', color: 'var(--primary)' }}>{resolvedCount}</div>
               <div className="stat-label" style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Resolved</div>
             </div>
             <div style={{ fontSize: '2rem', opacity: 0.2, color: 'var(--primary)' }}><CheckCircle size={32} /></div>
@@ -474,53 +541,53 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
 
         {/* View 1: Manage Reports Table */}
         {activeSubTab === 'list' && (
-          <div className="card" style={{ padding: '24px', overflow: 'hidden' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', flexWrap: 'wrap', marginBottom: '20px' }}>
-              <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', flex: 1 }}>
+          <div className="card" style={{ overflow: 'hidden' }}>
+            <div className="admin-filter-bar">
+              <div className="admin-filter-inputs">
                 <input 
                   type="text" 
                   placeholder="Search ID, Location or Reporter..." 
-                  className="form-control"
+                  className="form-control admin-search-input"
                   value={searchQuery}
                   onChange={function(e) { setSearchQuery(e.target.value); }}
-                  style={{ minWidth: '240px', padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', fontSize: '0.9rem' }}
                 />
 
-                <select 
-                  className="form-control"
-                  value={filterStatus}
-                  onChange={function(e) { setFilterStatus(e.target.value); }}
-                  style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-card)', fontSize: '0.9rem' }}
-                >
-                  <option value="All">All Statuses</option>
-                  <option value="Reported">Reported</option>
-                  <option value="Under Review">Under Review</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Resolved">Resolved</option>
-                </select>
+                <div className="admin-filter-row-selects">
+                  <select 
+                    className="form-control admin-select-filter"
+                    value={filterStatus}
+                    onChange={function(e) { setFilterStatus(e.target.value); }}
+                  >
+                    <option value="All">All Statuses</option>
+                    <option value="Reported">Reported</option>
+                    <option value="Under Review">Under Review</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                  </select>
 
-                <select 
-                  className="form-control"
-                  value={filterType}
-                  onChange={function(e) { setFilterType(e.target.value); }}
-                  style={{ padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-card)', fontSize: '0.9rem' }}
-                >
-                  <option value="All">All Waste Types</option>
-                  <option value="Wet Waste">Wet Waste</option>
-                  <option value="Dry Waste">Dry Waste</option>
-                  <option value="Plastic Waste">Plastic Waste</option>
-                  <option value="E-Waste">E-Waste</option>
-                  <option value="Mixed Waste">Mixed Waste</option>
-                  <option value="Other">Other</option>
-                </select>
+                  <select 
+                    className="form-control admin-select-filter"
+                    value={filterType}
+                    onChange={function(e) { setFilterType(e.target.value); }}
+                  >
+                    <option value="All">All Waste Types</option>
+                    <option value="Wet Waste">Wet Waste</option>
+                    <option value="Dry Waste">Dry Waste</option>
+                    <option value="Plastic Waste">Plastic Waste</option>
+                    <option value="E-Waste">E-Waste</option>
+                    <option value="Mixed Waste">Mixed Waste</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
               </div>
 
-              <div style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
+              <div className="admin-count-badge">
                 Showing <strong>{filteredReports.length}</strong> of <strong>{totalCount}</strong> entries
               </div>
             </div>
 
-            <div style={{ overflowX: 'auto' }}>
+            {/* Desktop Table View */}
+            <div className="admin-desktop-table">
               <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', minWidth: '600px' }}>
                 <thead>
                   <tr style={{ borderBottom: '2px solid var(--border-color)', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
@@ -579,6 +646,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                                 className="btn-danger-text" 
                                 onClick={function() { handleDeleteReport(report.id); }}
                                 style={{ color: '#ef4444', padding: '4px 8px', fontSize: '0.8rem' }}
+                                title="Delete complaint"
                               >
                                 <Trash2 size={14} />
                               </button>
@@ -591,16 +659,77 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                 </tbody>
               </table>
             </div>
+
+            {/* Mobile Cards View */}
+            <div className="admin-mobile-cards">
+              {filteredReports.length === 0 ? (
+                <div style={{ padding: '32px 16px', textAlign: 'center', color: 'var(--text-muted)', fontStyle: 'italic' }}>
+                  No complaints match your filters.
+                </div>
+              ) : (
+                filteredReports.map(function(report) {
+                  var statusBg = '#e2e8f0';
+                  var statusColor = '#334155';
+                  if (report.status === 'Reported') { statusBg = '#fee2e2'; statusColor = '#991b1b'; }
+                  else if (report.status === 'Under Review') { statusBg = '#fef9c3'; statusColor = '#854d0e'; }
+                  else if (report.status === 'In Progress') { statusBg = '#dbeafe'; statusColor = '#1e40af'; }
+                  else if (report.status === 'Resolved') { statusBg = '#d1fae5'; statusColor = '#065f46'; }
+
+                  return (
+                    <div key={report.id} className="admin-mobile-report-card">
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <strong style={{ fontSize: '1.05rem', color: 'var(--text-heading)' }}>{report.id}</strong>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{report.date}</span>
+                        </div>
+                        <span style={{ display: 'inline-block', padding: '3px 8px', borderRadius: '999px', fontSize: '0.72rem', fontWeight: 'bold', background: statusBg, color: statusColor, textTransform: 'uppercase' }}>
+                          {report.status}
+                        </span>
+                      </div>
+
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.88rem', marginBottom: '8px' }}>
+                        <MapPin size={14} style={{ color: '#ef4444', flexShrink: 0 }} />
+                        <span style={{ fontWeight: 500, color: 'var(--text-main)' }}>{report.location}</span>
+                      </div>
+
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '8px', borderTop: '1px solid var(--border-color)', marginTop: '8px' }}>
+                        <span style={{ fontSize: '0.78rem', background: 'var(--bg-card)', border: '1px solid var(--border-color)', padding: '2px 8px', borderRadius: '4px', color: 'var(--text-muted)' }}>
+                          {report.wasteType}
+                        </span>
+                        <div style={{ display: 'flex', gap: '8px' }}>
+                          <button 
+                            className="btn-secondary btn" 
+                            onClick={function() { handleOpenReport(report); }}
+                            style={{ padding: '6px 12px', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '4px' }}
+                          >
+                            <Eye size={12} /> Manage
+                          </button>
+                          <button 
+                            className="btn-danger-text" 
+                            onClick={function() { handleDeleteReport(report.id); }}
+                            style={{ color: '#ef4444', padding: '6px 8px', fontSize: '0.8rem' }}
+                            title="Delete complaint"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+
           </div>
         )}
 
         {/* View 2: Analytics Panels */}
         {activeSubTab === 'analytics' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '24px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div className="admin-analytics-grid">
               
               {/* SVG Ring */}
-              <div className="card text-center" style={{ padding: '32px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyItems: 'center' }}>
+              <div className="card text-center" style={{ padding: '28px 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyItems: 'center' }}>
                 <h4 style={{ fontSize: '1rem', color: 'var(--text-heading)', marginBottom: '16px' }}>Complaint Resolution Success Rate</h4>
                 
                 <div style={{ position: 'relative', width: '160px', height: '160px', marginBottom: '16px' }}>
@@ -623,7 +752,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
               </div>
 
               {/* Hotspot location chart */}
-              <div className="card" style={{ padding: '28px' }}>
+              <div className="card" style={{ padding: '24px' }}>
                 <h4 style={{ fontSize: '1rem', color: 'var(--text-heading)', marginBottom: '16px' }}>Top Hotspot Complaint Areas</h4>
                 {reportsByLoc.length === 0 ? (
                   <p style={{ fontStyle: 'italic', color: 'var(--text-muted)', fontSize: '0.9rem', textAlign: 'center', padding: '40px 0' }}>No locations recorded.</p>
@@ -650,7 +779,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
             </div>
 
             {/* Waste type breakdown */}
-            <div className="card" style={{ padding: '28px' }}>
+            <div className="card" style={{ padding: '24px' }}>
               <h4 style={{ fontSize: '1.05rem', color: 'var(--text-heading)', marginBottom: '20px' }}>Reports Breakdown by Waste Category</h4>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {reportsByType.map(function(item) {
@@ -665,12 +794,12 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                   else if (item.type === 'Mixed Waste') categoryColor = '#f97316';
 
                   return (
-                    <div key={item.type} style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                      <span style={{ width: '120px', fontSize: '0.85rem', fontWeight: '500', textAlign: 'right', flexShrink: 0 }}>{item.type}</span>
-                      <div style={{ flex: 1, height: '20px', background: 'var(--bg-app)', borderRadius: '4px', overflow: 'hidden' }}>
+                    <div key={item.type} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <span style={{ minWidth: '95px', fontSize: '0.82rem', fontWeight: '500', textAlign: 'right', flexShrink: 0 }}>{item.type}</span>
+                      <div style={{ flex: 1, height: '18px', background: 'var(--bg-app)', borderRadius: '4px', overflow: 'hidden' }}>
                         {item.count > 0 && <div style={{ width: pct + '%', height: '100%', background: categoryColor }} />}
                       </div>
-                      <span style={{ width: '32px', fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--text-heading)' }}>{item.count}</span>
+                      <span style={{ width: '28px', fontSize: '0.85rem', fontWeight: 'bold', color: 'var(--text-heading)' }}>{item.count}</span>
                     </div>
                   );
                 })}
@@ -681,15 +810,15 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
 
         {/* Modal: View Details & Update Status */}
         {selectedReport && (
-          <div className="modal-overlay" onClick={function() { setSelectedReport(null); }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-            <div className="modal-content" onClick={function(e) { e.stopPropagation(); }} style={{ padding: '28px', maxWidth: '640px', width: '100%', maxHeight: '85vh', overflowY: 'auto' }}>
+          <div className="modal-overlay" onClick={function() { setSelectedReport(null); }} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000, padding: '16px' }}>
+            <div className="modal-content admin-modal-content" onClick={function(e) { e.stopPropagation(); }} style={{ padding: '24px', maxWidth: '640px', width: '100%', maxHeight: '90vh', overflowY: 'auto' }}>
               <button className="modal-close" onClick={function() { setSelectedReport(null); }}>✕</button>
 
-              <h3 style={{ fontSize: '1.4rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px', marginBottom: '20px' }}>
+              <h3 style={{ fontSize: '1.3rem', borderBottom: '1px solid var(--border-color)', paddingBottom: '12px', marginBottom: '16px' }}>
                 Manage Report Details
               </h3>
 
-              <div style={{ display: 'grid', gridTemplateColumns: selectedReport.imageUrl ? '1fr 180px' : '1fr', gap: '24px', marginBottom: '24px' }}>
+              <div className="admin-modal-grid">
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '0.9rem' }}>
                   <div>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block' }}>Report ID</span>
@@ -735,7 +864,7 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                 {selectedReport.imageUrl && (
                   <div>
                     <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>Evidence Photo</span>
-                    <div style={{ width: '180px', height: '180px', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-color)' }}>
+                    <div className="admin-modal-image-box">
                       {selectedReport.imageUrl.startsWith('data:') ? (
                         <img src={selectedReport.imageUrl} alt="Uploaded Proof" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       ) : (
@@ -751,27 +880,27 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
                 )}
               </div>
 
-              <div style={{ background: 'var(--bg-app)', padding: '16px 20px', borderRadius: '8px', marginBottom: '24px', border: '1px solid var(--border-color)' }}>
+              <div style={{ background: 'var(--bg-app)', padding: '14px 16px', borderRadius: '8px', marginBottom: '20px', border: '1px solid var(--border-color)' }}>
                 <label style={{ fontSize: '0.85rem', fontWeight: 'bold', display: 'block', marginBottom: '8px' }}>Update Status</label>
-                <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   <select 
                     className="form-control"
                     value={editStatus}
                     onChange={function(e) { setEditStatus(e.target.value); }}
-                    style={{ flex: 1, padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-card)' }}
+                    style={{ flex: 1, minWidth: '160px', padding: '8px 12px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-card)' }}
                   >
                     <option value="Reported">🔴 Reported</option>
                     <option value="Under Review">🟡 Under Review</option>
                     <option value="In Progress">🔵 In Progress</option>
                     <option value="Resolved">🟢 Resolved</option>
                   </select>
-                  <button type="button" className="btn btn-primary" onClick={handleSaveStatus} style={{ padding: '0 20px' }}>Update</button>
+                  <button type="button" className="btn btn-primary" onClick={handleSaveStatus} style={{ padding: '8px 20px' }}>Update</button>
                 </div>
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <button type="button" className="btn btn-secondary" onClick={function() { handleTrackReport(selectedReport.id); }}>View Timeline</button>
-                <button type="button" className="btn btn-secondary" onClick={function() { setSelectedReport(null); }}>Close</button>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px' }}>
+                <button type="button" className="btn btn-secondary" onClick={function() { handleTrackReport(selectedReport.id); }} style={{ fontSize: '0.85rem' }}>View Timeline</button>
+                <button type="button" className="btn btn-secondary" onClick={function() { setSelectedReport(null); }} style={{ fontSize: '0.85rem' }}>Close</button>
               </div>
 
             </div>
