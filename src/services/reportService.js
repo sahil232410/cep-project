@@ -1,9 +1,9 @@
 import { db, isFirebaseConfigured } from '../firebase';
-import { collection, onSnapshot, doc, getDoc, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, onSnapshot, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 
 const COLLECTION_NAME = 'reports';
 
-// Initial fallback mock data
+// Initial fallback mock data (ET-1001 to ET-1003) - ALWAYS PRESERVED
 export const INITIAL_REPORTS = [
   {
     id: 'ET-1001',
@@ -98,9 +98,36 @@ export function subscribeToReports(onUpdate) {
   return () => window.removeEventListener('storage', handleStorage);
 }
 
-// Add a new report (Syncs to Firestore and LocalStorage)
+// Add a new report (Syncs to Firestore and LocalStorage with guaranteed unique sequential ID >= ET-1004)
 export async function createReport(newReport, currentReports, setReports) {
-  const updated = [newReport, ...currentReports.filter(r => r.id !== newReport.id)];
+  // 1. Calculate highest numeric ID from current local reports (baseline: 1003)
+  const localNumericIds = (currentReports || []).map(r => {
+    if (!r || !r.id || typeof r.id !== 'string') return 1000;
+    const match = r.id.match(/ET-(\d+)/);
+    return match ? parseInt(match[1]) : 1000;
+  });
+  let maxId = Math.max(1003, ...localNumericIds);
+
+  // 2. Query live Firestore collection to check highest existing ID across all clients
+  if (isFirebaseConfigured && db) {
+    try {
+      const snap = await getDocs(collection(db, COLLECTION_NAME));
+      const firestoreIds = snap.docs.map(d => {
+        const match = d.id.match(/ET-(\d+)/);
+        return match ? parseInt(match[1]) : 1000;
+      });
+      maxId = Math.max(maxId, ...firestoreIds);
+    } catch (e) {
+      console.warn("Could not query Firestore for max ID:", e);
+    }
+  }
+
+  // 3. Assign next guaranteed sequential ID
+  const finalId = `ET-${maxId + 1}`;
+  const finalizedReport = { ...newReport, id: finalId };
+
+  // 4. Update local state & localStorage immediately
+  const updated = [finalizedReport, ...(currentReports || []).filter(r => r.id !== finalId)];
   setReports(updated);
   try {
     localStorage.setItem('ecoTrackReports', JSON.stringify(updated));
@@ -108,19 +135,21 @@ export async function createReport(newReport, currentReports, setReports) {
     console.error(e);
   }
 
-  // Push to Firebase Cloud Firestore
+  // 5. Push to Firebase Cloud Firestore
   if (isFirebaseConfigured && db) {
     try {
-      console.log("Writing report to Firestore:", newReport.id);
-      await setDoc(doc(db, COLLECTION_NAME, newReport.id), newReport);
-      console.log("Successfully written to Firestore:", newReport.id);
+      console.log("Writing report to Firestore:", finalId);
+      await setDoc(doc(db, COLLECTION_NAME, finalId), finalizedReport);
+      console.log("Successfully written to Firestore:", finalId);
     } catch (err) {
       console.error("Failed to save report to Firestore:", err);
       if (err.code === 'permission-denied') {
-        alert("Firestore Permission Denied: Please check Firebase Console > Firestore Database > Rules tab, and set 'allow read, write: if true;' then click Publish.");
+        console.error("Firestore Permission Denied: Please check Firestore Security Rules.");
       }
     }
   }
+
+  return finalizedReport;
 }
 
 // Update report status (e.g. Reported -> In Progress -> Resolved)
@@ -182,12 +211,31 @@ export async function batchImportReports(newReportsList, currentReports, setRepo
   }
 }
 
-// Clear all reports
-export async function clearAllReports(setReports) {
-  setReports([]);
+// Clear all submitted user reports from Firestore and LocalStorage (preserves mock data ET-1001 to ET-1003)
+export async function clearAllReports(currentReports, setReports) {
+  const mockIds = INITIAL_REPORTS.map(r => r.id);
+
+  // Keep mock data in local state and localStorage
+  setReports(INITIAL_REPORTS);
   try {
-    localStorage.setItem('ecoTrackReports', JSON.stringify([]));
+    localStorage.setItem('ecoTrackReports', JSON.stringify(INITIAL_REPORTS));
   } catch (e) {
     console.error(e);
+  }
+
+  // Delete all non-mock documents from Cloud Firestore
+  if (isFirebaseConfigured && db) {
+    try {
+      const snap = await getDocs(collection(db, COLLECTION_NAME));
+      for (const d of snap.docs) {
+        if (!mockIds.includes(d.id)) {
+          console.log("Deleting submitted report from Firestore:", d.id);
+          await deleteDoc(doc(db, COLLECTION_NAME, d.id));
+        }
+      }
+      console.log("Firestore successfully cleaned: mock data preserved.");
+    } catch (err) {
+      console.error("Failed to clear submitted reports from Firestore:", err);
+    }
   }
 }

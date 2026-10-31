@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Layers, CheckCircle, RefreshCw, AlertCircle, BarChart2, List, Trash2, Eye, MapPin, Tag, Calendar, User, FileText, Upload, Lock, Unlock } from 'lucide-react';
 import { updateReport, deleteReportById, clearAllReports, batchImportReports, INITIAL_REPORTS } from '../services/reportService';
+import Modal from './Modal';
 
 export default function AdminDashboard({ reports, setReports, setTrackId, setCurrentPage }) {
   // Authentication states
@@ -21,6 +22,35 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
   // Selected report for modal
   var [selectedReport, setSelectedReport] = useState(null);
   var [editStatus, setEditStatus] = useState('');
+
+  // Reusable Alert & Confirmation Modal state
+  var [modalConfig, setModalConfig] = useState({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info',
+    confirmText: 'OK',
+    cancelText: 'Cancel',
+    onConfirm: null,
+    danger: false
+  });
+
+  var showModal = function (config) {
+    setModalConfig({
+      isOpen: true,
+      title: config.title || '',
+      message: config.message || '',
+      type: config.type || 'info',
+      confirmText: config.confirmText || 'OK',
+      cancelText: config.cancelText || 'Cancel',
+      onConfirm: config.onConfirm || null,
+      danger: Boolean(config.danger)
+    });
+  };
+
+  var closeModal = function () {
+    setModalConfig(function (prev) { return { ...prev, isOpen: false }; });
+  };
 
   // CSV parsing helper
   var parseCSVLine = function (line) {
@@ -52,7 +82,11 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
       var contents = evt.target.result;
       var lines = contents.split(/\r?\n/);
       if (lines.length <= 1) {
-        alert('The CSV file is empty.');
+        showModal({
+          title: 'Empty File',
+          message: 'The uploaded CSV file contains no data.',
+          type: 'warning'
+        });
         return;
       }
 
@@ -88,17 +122,17 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
       if (colIndices.image === -1) colIndices.image = 5;
 
       var newReports = [];
-      var nextIdNum = 1001;
-
-      // Find current max ID to increment
+      // Baseline 1003 to preserve mock data (ET-1001..1003)
+      var maxIdNum = 1003;
       if (reports && reports.length > 0) {
         var numericIds = reports.map(function (r) {
           if (!r || !r.id || typeof r.id !== 'string') return 1000;
           var match = r.id.match(/ET-(\d+)/);
           return match ? parseInt(match[1]) : 1000;
         });
-        nextIdNum = Math.max.apply(null, numericIds) + 1;
+        maxIdNum = Math.max(1003, ...numericIds);
       }
+      var nextIdNum = maxIdNum + 1;
 
       for (var j = 1; j < lines.length; j++) {
         var line = lines[j].trim();
@@ -156,14 +190,26 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
         });
 
         if (filteredNew.length === 0) {
-          alert('All reports in this CSV have already been imported.');
+          showModal({
+            title: 'Already Imported',
+            message: 'All reports in this CSV have already been imported into the dashboard.',
+            type: 'info'
+          });
           return;
         }
 
         batchImportReports(filteredNew, reports, setReports);
-        alert('Successfully imported ' + filteredNew.length + ' new complaints from Google Form responses!');
+        showModal({
+          title: 'Import Successful',
+          message: 'Successfully imported ' + filteredNew.length + ' new complaint(s) from Google Form responses!',
+          type: 'success'
+        });
       } else {
-        alert('No valid rows found in the CSV.');
+        showModal({
+          title: 'Invalid CSV Data',
+          message: 'No valid complaint rows found in the uploaded file.',
+          type: 'error'
+        });
       }
     };
     reader.readAsText(file);
@@ -221,17 +267,31 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
   };
 
   var handleDeleteReport = function (id) {
-    if (window.confirm('Delete report ' + id + '?')) {
-      deleteReportById(id, reports, setReports);
-      setSelectedReport(null);
-    }
+    showModal({
+      title: 'Delete Complaint',
+      message: 'Are you sure you want to permanently delete complaint ' + id + '? This action cannot be undone.',
+      type: 'confirm',
+      confirmText: 'Delete',
+      danger: true,
+      onConfirm: function () {
+        deleteReportById(id, reports, setReports);
+        setSelectedReport(null);
+      }
+    });
   };
 
   var handleClearAll = function () {
-    if (window.confirm('Are you sure you want to delete all reports? This will remove all complaints.')) {
-      clearAllReports(setReports);
-      setSelectedReport(null);
-    }
+    showModal({
+      title: 'Clear Submitted Complaints',
+      message: 'Are you sure you want to clear submitted test complaints from the cloud database? The 3 sample mock reports (ET-1001 to ET-1003) will be preserved.',
+      type: 'confirm',
+      confirmText: 'Clear Reports',
+      danger: true,
+      onConfirm: function () {
+        clearAllReports(reports, setReports);
+        setSelectedReport(null);
+      }
+    });
   };
 
   var handleResetDemo = function () {
@@ -867,6 +927,9 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
             </div>
           </div>
         )}
+
+        {/* Reusable Alert & Confirmation Modal */}
+        <Modal {...modalConfig} onClose={closeModal} />
 
       </div>
     </section>
