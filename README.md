@@ -10,12 +10,13 @@ The platform bridges local citizens and municipal ward coordinators by providing
 
 To keep the platform fast, lightweight, serverless, and easy to explain during a Viva presentation:
 1. **React 19 (Frontend Framework):** Component-based architecture using functional components, hooks (`useState`, `useEffect`), and lifted state management.
-2. **Vite (Build Tool & Dev Server):** High-speed bundling with multi-page Rollup routing (`/` citizen app and `/admin/` portal).
-3. **Vanilla CSS (Styling & Theming):** Clean design system utilizing CSS custom properties (`:root` variables) for Light and Dark modes. No heavy third-party CSS frameworks (like Tailwind or Bootstrap) were used, keeping the codebase transparent and fully explainable.
-4. **Lucide React (Icons):** Modern, SVG vector icons.
-5. **HTML5 APIs:**
-   * **`FileReader` + `<canvas>` API:** Automatically downscales and compresses uploaded waste photos into compact Base64 strings (~40KB) to ensure `localStorage` storage quotas are never exceeded.
-   * **`localStorage` API:** Persists complaint tickets and user theme preferences with real-time cross-tab synchronization (`storage` and `focus` events).
+2. **Google Cloud Firestore (Firebase):** Real-time cloud NoSQL database enabling live cross-device synchronization. Reports submitted on any resident's smartphone immediately appear on the municipal coordinator's dashboard in under 1 second.
+3. **Vite (Build Tool & Dev Server):** High-speed bundling with multi-page Rollup routing (`/` citizen app and `/admin/` portal).
+4. **Vanilla CSS (Styling & Theming):** Clean design system utilizing CSS custom properties (`:root` variables) for Light and Dark modes. No heavy third-party CSS frameworks (like Tailwind or Bootstrap) were used, keeping the codebase transparent and fully explainable.
+5. **Lucide React (Icons):** Modern, SVG vector icons.
+6. **HTML5 APIs:**
+   * **`FileReader` + `<canvas>` API:** Automatically downscales and compresses uploaded waste photos into compact Base64 strings (~40KB) to ensure storage quotas are never exceeded.
+   * **`localStorage` API:** Offline caching fallback ensuring the app remains usable even with intermittent network connectivity.
    * **`sessionStorage` API:** Gated authentication session for coordinator/admin access (`admin123`).
 
 ---

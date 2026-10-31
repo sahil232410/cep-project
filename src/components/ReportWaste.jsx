@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Camera, CheckCircle, ArrowRight, RefreshCw, FileText, MapPin, Layers, Calendar } from 'lucide-react';
+import { createReport } from '../services/reportService';
 
 export default function ReportWaste({ reports, setReports, setTrackId, setCurrentPage }) {
   // Form states
@@ -93,8 +94,8 @@ export default function ReportWaste({ reports, setReports, setTrackId, setCurren
       imageUrl: imagePreview
     };
 
-    // Add to reports array
-    setReports([newReport, ...reports]);
+    // Add to reports array (syncs to Firestore Cloud and LocalStorage)
+    createReport(newReport, reports, setReports);
     
     // Set success display
     setSubmittedReport(newReport);

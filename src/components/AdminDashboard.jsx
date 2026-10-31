@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Layers, CheckCircle, RefreshCw, AlertCircle, BarChart2, List, Trash2, Eye, MapPin, Tag, Calendar, User, FileText, Upload, Lock, Unlock } from 'lucide-react';
+import { updateReport, deleteReportById, clearAllReports, batchImportReports, INITIAL_REPORTS } from '../services/reportService';
 
 export default function AdminDashboard({ reports, setReports, setTrackId, setCurrentPage }) {
   // Authentication states
@@ -147,24 +148,20 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
       }
 
       if (newReports.length > 0) {
-        setReports(function(prev) {
-          // Avoid duplicate imports
-          var filteredNew = newReports.filter(function(nr) {
-            var exists = prev.some(function(pr) {
-              return pr.location.toLowerCase() === nr.location.toLowerCase() && 
-                     pr.description.toLowerCase() === nr.description.toLowerCase();
-            });
-            return !exists;
+        var filteredNew = newReports.filter(function(nr) {
+          return !reports.some(function(pr) {
+            return pr.location.toLowerCase() === nr.location.toLowerCase() && 
+                   pr.description.toLowerCase() === nr.description.toLowerCase();
           });
-
-          if (filteredNew.length === 0) {
-            alert('All reports in this CSV have already been imported.');
-            return prev;
-          }
-
-          alert('Successfully imported ' + filteredNew.length + ' new complaints from Google Form responses!');
-          return [].concat(filteredNew, prev);
         });
+
+        if (filteredNew.length === 0) {
+          alert('All reports in this CSV have already been imported.');
+          return;
+        }
+
+        batchImportReports(filteredNew, reports, setReports);
+        alert('Successfully imported ' + filteredNew.length + ' new complaints from Google Form responses!');
       } else {
         alert('No valid rows found in the CSV.');
       }
@@ -219,62 +216,26 @@ export default function AdminDashboard({ reports, setReports, setTrackId, setCur
 
   var handleSaveStatus = function() {
     if (!selectedReport) return;
-    var updatedList = reports.map(function(r) {
-      if (r.id === selectedReport.id) return { ...r, status: editStatus };
-      return r;
-    });
-    setReports(updatedList);
+    updateReport(selectedReport.id, editStatus, reports, setReports);
     setSelectedReport({ ...selectedReport, status: editStatus });
   };
 
   var handleDeleteReport = function(id) {
     if (window.confirm('Delete report ' + id + '?')) {
-      setReports(reports.filter(function(r) { return r.id !== id; }));
+      deleteReportById(id, reports, setReports);
       setSelectedReport(null);
     }
   };
 
   var handleClearAll = function() {
     if (window.confirm('Are you sure you want to delete all reports? This will remove all complaints.')) {
-      setReports([]);
+      clearAllReports(setReports);
       setSelectedReport(null);
     }
   };
 
   var handleResetDemo = function() {
-    var initialReports = [
-      {
-        id: 'ET-1001',
-        reporterName: 'Rahul Verma',
-        location: 'XYZ Garden',
-        wasteType: 'Plastic Waste',
-        description: 'Large pile of single-use plastic cups and beverage bottles dumped behind the public playground.',
-        date: '2026-08-25',
-        status: 'Reported',
-        imageUrl: ''
-      },
-      {
-        id: 'ET-1002',
-        reporterName: 'Priya Sharma',
-        location: 'ABC Road',
-        wasteType: 'Wet Waste',
-        description: 'Organic kitchen waste and vegetable scraps dumped on the sidewalk, attracting stray animals.',
-        date: '2026-08-25',
-        status: 'In Progress',
-        imageUrl: ''
-      },
-      {
-        id: 'ET-1003',
-        reporterName: 'Aniket Kamble',
-        location: 'Main Market',
-        wasteType: 'E-Waste',
-        description: 'Old electronic parts, broken charging adapters, and copper wires discarded in the open corner.',
-        date: '2026-08-24',
-        status: 'Resolved',
-        imageUrl: ''
-      }
-    ];
-    setReports(initialReports);
+    batchImportReports(INITIAL_REPORTS, [], setReports);
     setSelectedReport(null);
   };
 
