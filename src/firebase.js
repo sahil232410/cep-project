@@ -1,15 +1,15 @@
 import { initializeApp, getApps, getApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
-// Your web app's Firebase configuration
+// Firebase configuration loaded securely from environment variables (.env)
 const firebaseConfig = {
-  apiKey: "AIzaSyBhq-0fAV80B-ijM4cXbrVBYOp80MqY9dU",
-  authDomain: "ecotrack-e0be4.firebaseapp.com",
-  projectId: "ecotrack-e0be4",
-  storageBucket: "ecotrack-e0be4.firebasestorage.app",
-  messagingSenderId: "921738678314",
-  appId: "1:921738678314:web:7b56a801706815c1407353",
-  measurementId: "G-RZ3V3ETYYQ"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Check if credentials have been configured
